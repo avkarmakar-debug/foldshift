@@ -1,0 +1,2834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FoldShift — Open-Access 3D Protein Variant &amp; Structural Impact Workbench</title>
+
+  <!-- Custom Minimalist Line-Art "Inflection Ribbon + Key" SVG Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36' fill='none'%3E%3Crect width='36' height='36' rx='3' fill='%23FFFFFF' stroke='%23DCDCD6' stroke-width='1.5'/%3E%3Cpath d='M5 26C10 26 11.8 18 16.5 18C20.5 18 22 10 26.5 10' stroke='%231A1A1A' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M5 11.5C10 11.5 12 18 16.5 18C19.3 18 21.4 21.5 24.4 21.5H31' stroke='%23990000' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M27.2 21.5V25.2M30.2 21.5V24.2' stroke='%23990000' stroke-width='1.9' stroke-linecap='round'/%3E%3Ccircle cx='16.5' cy='18' r='3.3' fill='%23FFFFFF' stroke='%23990000' stroke-width='2'/%3E%3Ccircle cx='16.5' cy='18' r='1.1' fill='%231A1A1A'/%3E%3C/svg%3E" />
+
+  <!-- Google Fonts: Libre Baskerville (Editorial Serif), Inter (UI Sans), JetBrains Mono (Tabular Scientific Mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Libre Baskerville"', 'Georgia', 'Cambria', '"Times New Roman"', 'serif'],
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+          },
+          colors: {
+            paper: '#F8F8F6',
+            card: '#FFFFFF',
+            subtle: '#F2F2EE',
+            rule: '#DCDCD6',
+            ruleStrong: '#C8C8C0',
+            crimson: '#990000',
+            crimsonHover: '#7A0000',
+            roseTint: '#FDF2F2',
+            roseRule: '#E6C2C2',
+            ink: '#1A1A1A',
+            inkSecondary: '#52524E',
+            inkMuted: '#73736E',
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- 3Dmol.js WebGL Molecular Viewer (includes bundled jQuery) -->
+  <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+
+  <style>
+    body {
+      background-color: #F8F8F6;
+      color: #1A1A1A;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .archival-card {
+      background-color: #FFFFFF;
+      border: 1px solid #DCDCD6;
+      border-radius: 3px;
+    }
+
+    /* Archival thin scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F2F2EE;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #C8C8C0;
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #9E9E96;
+    }
+
+    #viewer-container canvas {
+      outline: none !important;
+      border-radius: 2px;
+    }
+
+    /* 100% Opaque White Sticky Table Header with Hairline Rule */
+    .opaque-thead th {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background-color: #FFFFFF;
+      box-shadow: inset 0 -1px 0 0 #DCDCD6;
+    }
+
+    /* Editorial Academic Typography for Structural Impact Report */
+    .prose-editorial h2,
+    .prose-editorial h3 {
+      font-family: 'Libre Baskerville', Georgia, serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #1A1A1A;
+      margin-top: 1.15rem;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid #DCDCD6;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .prose-editorial h2::before,
+    .prose-editorial h3::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background-color: #990000;
+      flex-shrink: 0;
+    }
+    .prose-editorial h2:first-child,
+    .prose-editorial h3:first-child {
+      margin-top: 0;
+    }
+    .prose-editorial p {
+      margin-bottom: 0.65rem;
+      line-height: 1.66;
+      color: #363633;
+      font-size: 0.855rem;
+    }
+    .prose-editorial ul,
+    .prose-editorial ol {
+      padding-left: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: #363633;
+      font-size: 0.855rem;
+    }
+    .prose-editorial ul {
+      list-style-type: disc;
+    }
+    .prose-editorial ol {
+      list-style-type: decimal;
+    }
+    .prose-editorial li {
+      margin-bottom: 0.38rem;
+      line-height: 1.6;
+    }
+    .prose-editorial li::marker {
+      color: #990000;
+    }
+    .prose-editorial strong {
+      color: #1A1A1A;
+      font-weight: 600;
+    }
+    .prose-editorial code {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 0.78rem;
+      background-color: #F2F2EE;
+      border: 1px solid #DCDCD6;
+      color: #1A1A1A;
+      padding: 0.08rem 0.32rem;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-[#FDF2F2] selection:text-[#990000] overflow-x-hidden">
+
+  <!-- ==================== 3PX SIGNATURE CRIMSON TOP ACCENT RULE ==================== -->
+  <div class="w-full h-[3px] bg-[#990000] shrink-0"></div>
+
+  <!-- ==================== EDITORIAL ARCHIVAL MASTHEAD ==================== -->
+  <header class="sticky top-0 z-30 bg-[#FFFFFF] border-b border-[#DCDCD6]">
+    <div class="max-w-[1440px] mx-auto px-3.5 sm:px-6 py-3 flex items-center justify-between gap-3">
+
+      <!-- Brand Title + Custom Line-Art Inflection Ribbon & Key SVG Emblem -->
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-[3px] bg-[#F8F8F6] border border-[#DCDCD6] flex items-center justify-center shrink-0" aria-hidden="true">
+          <svg class="w-8 h-8" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 26C10 26 11.8 18 16.5 18C20.5 18 22 10 26.5 10" stroke="#1A1A1A" stroke-width="1.9" stroke-linecap="round" />
+            <path d="M5 11.5C10 11.5 12 18 16.5 18C19.3 18 21.4 21.5 24.4 21.5H31" stroke="#990000" stroke-width="1.9" stroke-linecap="round" />
+            <path d="M27.2 21.5V25.2M30.2 21.5V24.2" stroke="#990000" stroke-width="1.8" stroke-linecap="round" />
+            <circle cx="16.5" cy="18" r="3.3" fill="#FFFFFF" stroke="#990000" stroke-width="1.9" />
+            <circle cx="16.5" cy="18" r="1.1" fill="#1A1A1A" />
+          </svg>
+        </div>
+
+        <div class="min-w-0">
+          <div class="flex items-baseline gap-2.5 flex-wrap">
+            <h1 class="font-serif text-lg sm:text-xl font-bold tracking-tight text-[#1A1A1A] leading-none">
+              FoldShift
+            </h1>
+            <span class="hidden md:inline-block text-[10px] font-mono uppercase tracking-wider text-[#73736E] border border-[#DCDCD6] bg-[#F8F8F6] px-1.5 py-0.5 rounded-[2px]">
+              AlphaFold DB · UniProt · Gemini
+            </span>
+          </div>
+          <p class="font-serif italic text-[11px] sm:text-xs text-[#52524E] truncate mt-1">
+            Open-Access 3D Protein Variant &amp; Structural Impact Workbench
+          </p>
+        </div>
+      </div>
+
+      <!-- Header Utility Actions -->
+      <div class="flex items-center gap-2 shrink-0">
+        <button id="exportBtn" type="button" disabled
+          class="px-3 py-2 text-xs font-medium rounded-[3px] border border-[#DCDCD6] bg-[#FFFFFF] text-[#1A1A1A] hover:bg-[#F2F2EE] hover:border-[#C8C8C0] disabled:opacity-40 disabled:cursor-not-allowed transition inline-flex items-center gap-1.5"
+          title="Download Markdown research brief">
+          <svg class="w-3.5 h-3.5 text-[#990000]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          <span class="font-mono">Export .md</span>
+        </button>
+
+        <button id="apiKeyBtn" type="button"
+          class="px-3 py-2 text-xs font-medium rounded-[3px] border border-[#DCDCD6] bg-[#FFFFFF] text-[#1A1A1A] hover:bg-[#F2F2EE] hover:border-[#990000]/50 transition inline-flex items-center gap-2"
+          title="Configure Google Gemini API key">
+          <span id="apiStatusDot" class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+          <span id="apiStatusText" class="whitespace-nowrap">Add Gemini Key</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN WORKBENCH ==================== -->
+  <main class="max-w-[1440px] w-full mx-auto px-3.5 sm:px-6 py-4 sm:py-5 flex-1 space-y-4">
+
+    <!-- ==================== SIGNATURE EDITORIAL SEARCH HERO ==================== -->
+    <section class="archival-card p-4 sm:p-5 space-y-3.5">
+      <div class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-1">
+        <h2 class="font-serif text-sm sm:text-base font-bold text-[#1A1A1A]">
+          Inspect a Human Missense Variant
+        </h2>
+        <span class="font-serif italic text-xs text-[#73736E]">
+          Enter a gene symbol or UniProt accession + missense variant (e.g., TP53 R248W, P04637 p.R248W)
+        </span>
+      </div>
+
+      <!-- Direct Search Input + Solid Crimson "Open" Submit Button -->
+      <form id="queryForm" class="flex flex-col sm:flex-row gap-2">
+        <div class="relative flex-1">
+          <label for="variantInput" class="sr-only">Enter human gene or UniProt accession and missense variant</label>
+          <input
+            id="variantInput"
+            type="text"
+            value="TP53 R248W"
+            placeholder="e.g., TP53 R248W, BRAF V600E, or P04637 R248W"
+            class="w-full px-3.5 py-2.5 rounded-[3px] bg-[#FFFFFF] border border-[#C8C8C0] text-sm font-mono text-[#1A1A1A] placeholder-[#73736E] focus:outline-none focus:border-[#990000] focus:ring-1 focus:ring-[#990000] transition"
+            required
+          />
+        </div>
+        <button
+          id="analyzeBtn"
+          type="submit"
+          class="px-6 py-2.5 rounded-[3px] bg-[#990000] hover:bg-[#7A0000] text-[#FFFFFF] text-sm font-semibold tracking-wide transition disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap inline-flex items-center justify-center gap-2">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="7.5" cy="15.5" r="4.5" />
+            <path d="m21 2-9.6 9.6" />
+            <path d="m15.5 7.5 3 3L22 7l-3-3" />
+          </svg>
+          <span>Open</span>
+        </button>
+      </form>
+
+      <!-- Academic Index Preset Links -->
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs border-t border-[#F2F2EE] pt-2.5">
+        <span class="font-mono text-[10px] uppercase tracking-wider text-[#73736E]">Index Examples:</span>
+        <button type="button" class="preset-btn font-mono text-[#1A1A1A] hover:text-[#990000] underline decoration-[#C8C8C0] hover:decoration-[#990000] underline-offset-4 transition whitespace-nowrap" data-val="TP53 R248W">
+          TP53 R248W <span class="font-sans text-[#73736E] no-underline">(DNA-binding hotspot)</span>
+        </button>
+        <span class="text-[#DCDCD6] select-none" aria-hidden="true">|</span>
+        <button type="button" class="preset-btn font-mono text-[#1A1A1A] hover:text-[#990000] underline decoration-[#C8C8C0] hover:decoration-[#990000] underline-offset-4 transition whitespace-nowrap" data-val="BRAF V600E">
+          BRAF V600E <span class="font-sans text-[#73736E] no-underline">(Kinase activation loop)</span>
+        </button>
+        <span class="text-[#DCDCD6] select-none" aria-hidden="true">|</span>
+        <button type="button" class="preset-btn font-mono text-[#1A1A1A] hover:text-[#990000] underline decoration-[#C8C8C0] hover:decoration-[#990000] underline-offset-4 transition whitespace-nowrap" data-val="BRCA1 C61G">
+          BRCA1 C61G <span class="font-sans text-[#73736E] no-underline">(RING Zn-finger)</span>
+        </button>
+        <span class="text-[#DCDCD6] select-none" aria-hidden="true">|</span>
+        <button type="button" class="preset-btn font-mono text-[#1A1A1A] hover:text-[#990000] underline decoration-[#C8C8C0] hover:decoration-[#990000] underline-offset-4 transition whitespace-nowrap" data-val="EGFR L858R">
+          EGFR L858R <span class="font-sans text-[#73736E] no-underline">(Kinase domain)</span>
+        </button>
+        <span class="text-[#DCDCD6] select-none" aria-hidden="true">|</span>
+        <button type="button" class="preset-btn font-mono text-[#1A1A1A] hover:text-[#990000] underline decoration-[#C8C8C0] hover:decoration-[#990000] underline-offset-4 transition whitespace-nowrap" data-val="HBB E7V">
+          HBB E7V <span class="font-sans text-[#73736E] no-underline">(Sickle cell canonical)</span>
+        </button>
+      </div>
+
+      <!-- Live 3-Stage Pipeline Status Bar (with optional offset action CTA) -->
+      <div id="statusBar" class="hidden text-xs px-3 py-2 rounded-[3px] bg-[#F8F8F6] border border-[#DCDCD6] text-[#52524E] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div class="flex items-center gap-2 min-w-0 flex-wrap">
+          <span id="statusIcon" class="shrink-0 flex items-center"></span>
+          <span id="statusText" class="leading-snug"></span>
+          <button id="offsetFixBtn" type="button" class="hidden px-2 py-0.5 rounded-[2px] bg-[#990000] hover:bg-[#7A0000] text-[#FFFFFF] font-mono text-[11px] font-semibold transition"></button>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0 font-mono text-[10px] tabular-nums">
+          <span id="pipeStep1" class="px-1.5 py-0.5 rounded-[2px] border border-[#DCDCD6] bg-[#FFFFFF] text-[#73736E]">1/3 UniProt</span>
+          <span class="text-[#C8C8C0]">&rarr;</span>
+          <span id="pipeStep2" class="px-1.5 py-0.5 rounded-[2px] border border-[#DCDCD6] bg-[#FFFFFF] text-[#73736E]">2/3 AlphaFold</span>
+          <span class="text-[#C8C8C0]">&rarr;</span>
+          <span id="pipeStep3" class="px-1.5 py-0.5 rounded-[2px] border border-[#DCDCD6] bg-[#FFFFFF] text-[#73736E]">3/3 3D Math</span>
+          <button id="statusClose" type="button" class="ml-1 p-1 text-[#73736E] hover:text-[#1A1A1A] transition" aria-label="Dismiss status">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CORE 2-COLUMN EDITORIAL WORKBENCH ==================== -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+
+      <!-- ==================== LEFT COLUMN (7 COLS): 3D VIEWER + 1D TRACK + CONTACTS ==================== -->
+      <div class="lg:col-span-7 space-y-4 min-w-0">
+
+        <!-- 3Dmol.js Interactive Publication Structure Card -->
+        <section class="archival-card p-3.5 sm:p-4 space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 pb-2.5 border-b border-[#F2F2EE]">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h2 class="font-serif text-sm font-bold text-[#1A1A1A]">3D AlphaFold Structure</h2>
+                <button id="domainActivePill" type="button"
+                  class="hidden text-[11px] font-mono px-2 py-0.5 rounded-[2px] bg-[#F5F3FF] text-[#6D28D9] border border-[#DDD6FE] hover:bg-[#EDE9FE] transition inline-flex items-center gap-1"
+                  title="Click to clear highlighted 3D domain">
+                  <span id="domainActivePillText"></span>
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                </button>
+              </div>
+              <p id="viewerSubtitle" class="text-xs text-[#73736E] truncate mt-0.5">Initializing WebGL molecular viewport...</p>
+            </div>
+
+            <!-- Precision Viewer Controls -->
+            <div class="flex flex-wrap items-center gap-1.5">
+              <label for="colorMode" class="sr-only">Color representation</label>
+              <select id="colorMode"
+                class="bg-[#FFFFFF] border border-[#C8C8C0] hover:border-[#990000] text-xs text-[#1A1A1A] rounded-[3px] px-2 py-1.5 focus:outline-none focus:border-[#990000] transition">
+                <option value="plddt">Color: AlphaFold pLDDT</option>
+                <option value="ss">Color: Secondary Structure</option>
+                <option value="spectrum">Color: N&#8594;C Spectrum</option>
+              </select>
+
+              <button id="focusBtn" type="button"
+                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FDF2F2] border border-[#E6C2C2] text-[#990000] hover:bg-[#990000] hover:text-[#FFFFFF] hover:border-[#990000] transition inline-flex items-center gap-1"
+                title="Focus camera on mutated residue">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3" /><path d="M12 2v4m0 12v4M2 12h4m12 0h4" /></svg>
+                <span>Focus Site</span>
+              </button>
+
+              <button id="resetBtn" type="button"
+                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition"
+                title="Reset full protein view">
+                Reset View
+              </button>
+
+              <button id="surfaceBtn" type="button"
+                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition"
+                title="Toggle translucent molecular surface">
+                Surface
+              </button>
+
+              <button id="spinBtn" type="button"
+                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition"
+                title="Toggle continuous rotation">
+                Spin
+              </button>
+
+              <button id="bgToggleBtn" type="button"
+                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition inline-flex items-center gap-1"
+                title="Toggle Publication White / Dark 3D Canvas">
+                <svg id="bgToggleIcon" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg>
+                <span id="bgToggleText">Dark BG</span>
+              </button>
+
+              <button id="snapshotBtn" type="button"
+                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#1A1A1A] hover:border-[#990000] hover:text-[#990000] transition inline-flex items-center gap-1"
+                title="Download publication PNG snapshot">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /><circle cx="12" cy="13" r="3" /></svg>
+                <span class="font-mono">PNG</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Publication White (#FFFFFF) Default WebGL Viewport -->
+          <div id="viewerFrame" class="relative rounded-[3px] overflow-hidden border border-[#DCDCD6] bg-[#FFFFFF] transition-colors">
+            <div id="viewer-container" class="w-full h-[360px] sm:h-[460px] relative cursor-grab active:cursor-grabbing"></div>
+
+            <!-- Viewport Loading Overlay -->
+            <div id="viewerLoader" class="hidden absolute inset-0 z-20 bg-[#FFFFFF]/90 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2.5">
+              <svg class="w-7 h-7 text-[#990000] animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle class="opacity-20" cx="12" cy="12" r="10" />
+                <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round" />
+              </svg>
+              <p id="viewerLoaderText" class="text-xs font-mono text-[#1A1A1A]">Fetching AlphaFold coordinates...</p>
+            </div>
+
+            <!-- Active Distance Vector Readout Overlay -->
+            <div id="measureBadge" class="hidden absolute top-3 left-3 z-10 px-2.5 py-1.5 rounded-[3px] bg-[#FFFFFF]/95 border border-[#B45309]/50 text-[#92400E] text-xs font-mono tabular-nums flex items-center gap-2 shadow-sm">
+              <svg class="w-3.5 h-3.5 text-[#B45309] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z" /><path d="m14.5 12.5 2-2" /><path d="m11.5 9.5 2-2" /><path d="m8.5 6.5 2-2" /><path d="m17.5 15.5 2-2" /></svg>
+              <span id="measureBadgeText"></span>
+              <button id="clearMeasureBtn" type="button" class="text-[#73736E] hover:text-[#1A1A1A] transition inline-flex items-center" aria-label="Clear distance measurement" title="Clear vector">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Editorial Figure Legend -->
+          <div class="flex flex-wrap items-center justify-between gap-2.5 text-[11px] text-[#52524E] pt-0.5">
+            <div class="flex flex-wrap items-center gap-3.5">
+              <span class="inline-flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#C81E1E]"></span>
+                <span>Mutated Site</span>
+              </span>
+              <span class="inline-flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#0F766E]"></span>
+                <span>8.0 &#8491; Neighbors</span>
+              </span>
+              <span class="inline-flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#B45309]"></span>
+                <span>Distance Vector</span>
+              </span>
+              <span class="inline-flex items-center gap-1.5">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#6D28D9]"></span>
+                <span>Selected Domain</span>
+              </span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-1.5 font-mono tabular-nums text-[10px]">
+              <span class="font-sans text-[#73736E] uppercase tracking-wider mr-0.5">pLDDT</span>
+              <span class="px-1.5 py-0.5 rounded-[2px] bg-[#0053D6]/10 text-[#0053D6] border border-[#0053D6]/30">&gt;90</span>
+              <span class="px-1.5 py-0.5 rounded-[2px] bg-[#65CBF3]/25 text-[#0369A1] border border-[#65CBF3]/60">70&#8211;90</span>
+              <span class="px-1.5 py-0.5 rounded-[2px] bg-[#FFDB13]/25 text-[#92400E] border border-[#FFDB13]/70">50&#8211;70</span>
+              <span class="px-1.5 py-0.5 rounded-[2px] bg-[#FF7D45]/15 text-[#C2410C] border border-[#FF7D45]/40">&lt;50</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- HiDPI Interactive 1D-to-3D Sequence & pLDDT Confidence Track Card -->
+        <section class="archival-card p-3.5 sm:p-4 space-y-3.5">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#F2F2EE]">
+            <div>
+              <h2 class="font-serif text-sm font-bold text-[#1A1A1A]">1D Sequence &amp; Domain Architecture</h2>
+              <p class="text-[11px] text-[#73736E] mt-0.5">Hover or touch track for pLDDT; click or tap any coordinate to zoom in 3D; click annotations to highlight domains.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="clearDomainInlineBtn" type="button"
+                class="hidden px-2.5 py-1 rounded-[3px] bg-[#F5F3FF] hover:bg-[#EDE9FE] border border-[#DDD6FE] text-[11px] font-medium text-[#6D28D9] transition inline-flex items-center gap-1">
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                <span>Clear 3D highlight</span>
+              </button>
+              <span id="trackHoverReadout" class="text-[11px] font-mono tabular-nums text-[#52524E] bg-[#F2F2EE] border border-[#DCDCD6] px-2 py-0.5 rounded-[2px]">1 &#8212; &#8212; aa</span>
+            </div>
+          </div>
+
+          <!-- HiDPI HTML5 Canvas Track + Crimson Mutation Pin + Hover Cursor -->
+          <div class="relative pt-5">
+            <div id="mutationPinContainer" class="absolute top-0 left-0 right-0 h-5 pointer-events-none"></div>
+            <div id="plddtTrackWrapper" class="relative w-full h-7 rounded-[2px] overflow-hidden border border-[#C8C8C0] bg-[#F2F2EE] cursor-crosshair select-none touch-pan-y">
+              <canvas id="plddtTrackCanvas" class="w-full h-full block"></canvas>
+              <div id="trackHoverLine" class="hidden absolute top-0 bottom-0 w-[1px] bg-[#1A1A1A] pointer-events-none"></div>
+            </div>
+            <div class="grid grid-cols-5 text-[10px] font-mono tabular-nums text-[#73736E] mt-1.5">
+              <span id="seqStartLabel" class="text-left">1</span>
+              <span id="seqQ1Label" class="text-center">&#8212;</span>
+              <span id="seqMidLabel" class="text-center">&#8212;</span>
+              <span id="seqQ3Label" class="text-center">&#8212;</span>
+              <span id="seqEndLabel" class="text-right">&#8212;</span>
+            </div>
+          </div>
+
+          <!-- Sorted & Collapsible UniProt Domain/Feature Chips (Overlapping First) -->
+          <div class="space-y-2.5 pt-0.5">
+            <div id="domainPillsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <span class="text-xs text-[#73736E]">Loading UniProt functional annotations...</span>
+            </div>
+            <div id="domainToggleWrap" class="hidden flex items-center justify-between pt-1">
+              <button id="domainToggleBtn" type="button"
+                class="px-3 py-1.5 rounded-[3px] bg-[#F8F8F6] hover:bg-[#F2F2EE] border border-[#DCDCD6] text-xs font-medium text-[#990000] transition inline-flex items-center gap-1.5">
+                <svg id="domainToggleChevron" class="w-3.5 h-3.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+                <span id="domainToggleText">Show all annotations</span>
+              </button>
+              <span id="domainSummaryCount" class="text-[11px] font-mono tabular-nums text-[#73736E]"></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3D Spatial Microenvironment Table Card (Cα ≤ 8.0 Å) -->
+        <section class="archival-card p-3.5 sm:p-4 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#F2F2EE]">
+            <div>
+              <h2 class="font-serif text-sm font-bold text-[#1A1A1A]">3D Spatial Microenvironment (C&#945; &le; 8.0 &#8491;)</h2>
+              <p class="text-[11px] text-[#73736E] mt-0.5">Click any residue row to toggle a dashed burnished-amber 3D distance vector and zoom to the pair.</p>
+            </div>
+            <button id="clearVectorTableBtn" type="button"
+              class="hidden px-2.5 py-1 rounded-[3px] bg-[#FFFBEB] hover:bg-[#FEF3C7] border border-[#B45309]/40 text-[11px] font-medium text-[#92400E] transition inline-flex items-center gap-1">
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+              <span>Clear Vector</span>
+            </button>
+          </div>
+
+          <!-- Archival Crimson-Accented 3D Hotspot Cluster Banner -->
+          <div id="hotspotBanner" class="hidden rounded-[3px] bg-[#FDF2F2] border border-[#E6C2C2] border-l-[3px] border-l-[#990000] px-3.5 py-2.5 flex items-start gap-2.5">
+            <span class="mt-0.5 text-[#990000] shrink-0" aria-hidden="true">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9" stroke-opacity="0.4" />
+                <circle cx="12" cy="12" r="5" />
+                <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+                <line x1="12" y1="2" x2="12" y2="5" />
+                <line x1="12" y1="19" x2="12" y2="22" />
+                <line x1="2" y1="12" x2="5" y2="12" />
+                <line x1="19" y1="12" x2="22" y2="12" />
+              </svg>
+            </span>
+            <p id="hotspotBannerText" class="text-xs text-[#1A1A1A] leading-relaxed"></p>
+          </div>
+
+          <!-- Mobile-Friendly Table with 100% Opaque White Sticky Header -->
+          <div class="overflow-x-auto overflow-y-auto max-h-64 rounded-[3px] border border-[#DCDCD6] bg-[#FFFFFF]">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="opaque-thead text-[10px] font-mono font-semibold uppercase tracking-wider text-[#52524E]">
+                <tr>
+                  <th class="px-3.5 py-2.5 whitespace-nowrap">Residue</th>
+                  <th class="px-3.5 py-2.5 whitespace-nowrap">3D Dist</th>
+                  <th class="px-3.5 py-2.5 whitespace-nowrap">Contact Type</th>
+                  <th class="px-3.5 py-2.5 whitespace-nowrap text-right">pLDDT</th>
+                  <th class="px-3.5 py-2.5 whitespace-nowrap">UniProt Variants</th>
+                </tr>
+              </thead>
+              <tbody id="contactsTableBody" class="divide-y divide-[#F2F2EE] font-mono tabular-nums text-[#1A1A1A]">
+                <tr>
+                  <td colspan="5" class="px-3.5 py-5 text-center text-[#73736E] font-sans">Awaiting PDB coordinate analysis...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ==================== RIGHT COLUMN (5 COLS): METRICS + CLINICAL + REPORT + Q&A ==================== -->
+      <div class="lg:col-span-5 space-y-4 min-w-0">
+
+        <!-- 4-Card Key Metrics Grid -->
+        <section class="grid grid-cols-2 gap-3">
+          <div class="archival-card p-3.5 min-w-0">
+            <div class="text-[10px] font-mono uppercase tracking-wider text-[#73736E]">UniProt Entry</div>
+            <div id="metricUniprot" class="text-sm sm:text-base font-bold font-mono tabular-nums text-[#1A1A1A] mt-1 truncate">&#8212;</div>
+            <div id="metricProtein" class="text-[11px] text-[#52524E] truncate mt-0.5">Waiting for query</div>
+          </div>
+
+          <div class="archival-card p-3.5 min-w-0">
+            <div class="text-[10px] font-mono uppercase tracking-wider text-[#73736E]">Local AlphaFold pLDDT</div>
+            <div id="metricPlddt" class="text-sm sm:text-base font-bold font-mono tabular-nums text-[#0053D6] mt-1">&#8212;</div>
+            <div id="metricConfidence" class="text-[11px] text-[#52524E] truncate mt-0.5">Confidence tier</div>
+          </div>
+
+          <div class="archival-card p-3.5 min-w-0">
+            <div class="text-[10px] font-mono uppercase tracking-wider text-[#73736E]">3D Microenvironment</div>
+            <div id="metricNeighbors" class="text-sm sm:text-base font-bold font-mono tabular-nums text-[#0F766E] mt-1">&#8212;</div>
+            <div id="metricBurial" class="text-[11px] text-[#52524E] truncate mt-0.5">Burial classification</div>
+          </div>
+
+          <div class="archival-card p-3.5 min-w-0">
+            <div class="text-[10px] font-mono uppercase tracking-wider text-[#73736E]">Physicochemical Shift</div>
+            <div id="metricShift" class="text-xs sm:text-sm font-semibold text-[#1A1A1A] mt-1 truncate">&#8212;</div>
+            <div id="metricVerify" class="text-[11px] text-[#52524E] mt-0.5 flex items-center gap-1 truncate">Sequence verification</div>
+          </div>
+        </section>
+
+        <!-- Curated UniProt Clinical Variant Record Banner -->
+        <section id="clinicalCard" class="hidden archival-card p-3.5 bg-[#FDF2F2] border-[#E6C2C2] border-l-[3px] border-l-[#990000] space-y-1.5">
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="font-serif text-xs font-bold text-[#990000] inline-flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+              <span>UniProt Curated Variant Record</span>
+            </h3>
+            <span id="clinicalIds" class="text-[10px] font-mono tabular-nums text-[#73736E] truncate"></span>
+          </div>
+          <p id="clinicalDesc" class="text-xs text-[#1A1A1A] leading-relaxed"></p>
+        </section>
+
+        <!-- Dual-Tier Structural Impact Report Panel -->
+        <section class="archival-card p-4 flex flex-col">
+          <div class="flex flex-wrap items-center justify-between gap-2.5 pb-3 border-b border-[#DCDCD6]">
+            <div class="min-w-0">
+              <h2 class="font-serif text-sm font-bold text-[#1A1A1A]">Structural Impact Report</h2>
+              <p id="reportModeLabel" class="text-[11px] text-[#73736E] mt-0.5">Deterministic Biophysical &amp; Gemini Engine</p>
+            </div>
+
+            <!-- Segmented Audience Toggle: Lab Researcher vs Plain English -->
+            <div class="inline-flex rounded-[3px] bg-[#F2F2EE] p-0.5 border border-[#DCDCD6] text-[11px] shrink-0" role="group" aria-label="Audience mode">
+              <button id="audResearcher" type="button" class="px-2.5 py-1 rounded-[2px] font-medium bg-[#FFFFFF] text-[#990000] border border-[#DCDCD6] transition">
+                Lab Researcher
+              </button>
+              <button id="audPlain" type="button" class="px-2.5 py-1 rounded-[2px] font-medium text-[#52524E] hover:text-[#1A1A1A] border border-transparent transition">
+                Plain English
+              </button>
+            </div>
+          </div>
+
+          <div id="reportContent" class="prose-editorial mt-3.5 overflow-y-auto max-h-[390px] pr-1">
+            <p class="text-[#73736E]">Initializing structural variant evaluation...</p>
+          </div>
+
+          <!-- Engine Readout & Actions Footer -->
+          <div class="mt-3.5 pt-3 border-t border-[#DCDCD6] flex flex-wrap items-center justify-between gap-2">
+            <span id="modelUsedLabel" class="inline-flex items-center gap-1.5 px-2 py-1 rounded-[2px] bg-[#F8F8F6] border border-[#DCDCD6] text-[10px] font-mono text-[#52524E]">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#73736E]" id="engineDot"></span>
+              <span id="engineText">Offline Biophysical</span>
+            </span>
+
+            <div class="flex items-center gap-2">
+              <button id="exportBriefInlineBtn" type="button" disabled
+                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] border border-[#DCDCD6] bg-[#FFFFFF] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] disabled:opacity-40 transition inline-flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-[#990000]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
+                <span class="font-mono">.md</span>
+              </button>
+              <button id="runGeminiBtn" type="button"
+                class="px-3 py-1.5 text-xs font-semibold rounded-[3px] bg-[#990000] hover:bg-[#7A0000] text-[#FFFFFF] transition inline-flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2L12 3z" /></svg>
+                <span id="runGeminiBtnText">Run Gemini AI</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Follow-Up Q&A Workbench -->
+        <section class="archival-card p-4 flex flex-col space-y-3">
+          <div class="pb-2 border-b border-[#F2F2EE]">
+            <h2 class="font-serif text-sm font-bold text-[#1A1A1A]">Follow-Up Structural Q&amp;A</h2>
+            <p class="text-[11px] text-[#73736E] mt-0.5">Interrogate binding affinity, mutagenesis controls, or 3D hotspot clusters grounded in live coordinates.</p>
+          </div>
+
+          <!-- 3 Starter Question Chips -->
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" class="chat-chip px-2.5 py-1.5 rounded-[3px] bg-[#F8F8F6] hover:bg-[#FDF2F2] border border-[#DCDCD6] hover:border-[#E6C2C2] text-[11px] text-[#52524E] hover:text-[#990000] transition text-left"
+              data-q="How does this variant affect binding affinity?">
+              How does this affect binding affinity?
+            </button>
+            <button type="button" class="chat-chip px-2.5 py-1.5 rounded-[3px] bg-[#F8F8F6] hover:bg-[#FDF2F2] border border-[#DCDCD6] hover:border-[#E6C2C2] text-[11px] text-[#52524E] hover:text-[#990000] transition text-left"
+              data-q="What mutagenesis control should I run?">
+              What mutagenesis control should I run?
+            </button>
+            <button type="button" class="chat-chip px-2.5 py-1.5 rounded-[3px] bg-[#F8F8F6] hover:bg-[#FDF2F2] border border-[#DCDCD6] hover:border-[#E6C2C2] text-[11px] text-[#52524E] hover:text-[#990000] transition text-left"
+              data-q="Explain the 3D hotspot cluster">
+              Explain the 3D hotspot cluster
+            </button>
+          </div>
+
+          <!-- Conversation History -->
+          <div id="chatThread" class="hidden space-y-2.5 max-h-64 overflow-y-auto pr-1 pt-2 border-t border-[#DCDCD6]"></div>
+
+          <!-- Follow-Up Input Form -->
+          <form id="chatForm" class="flex gap-2">
+            <label for="chatInput" class="sr-only">Ask a structural biology question</label>
+            <input
+              id="chatInput"
+              type="text"
+              placeholder="Ask about binding pockets, steric clashes, or controls..."
+              class="flex-1 bg-[#FFFFFF] border border-[#C8C8C0] rounded-[3px] px-3 py-2 text-xs sm:text-sm text-[#1A1A1A] placeholder-[#73736E] focus:outline-none focus:border-[#990000] transition"
+            />
+            <button
+              id="chatSendBtn"
+              type="submit"
+              class="px-3.5 py-2 rounded-[3px] bg-[#990000] hover:bg-[#7A0000] text-[#FFFFFF] text-xs font-semibold transition disabled:opacity-40 inline-flex items-center gap-1.5 whitespace-nowrap">
+              <span>Ask</span>
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
+            </button>
+          </form>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== EDITORIAL FOOTER ==================== -->
+  <footer class="border-t border-[#DCDCD6] bg-[#FFFFFF] mt-6">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-[#73736E]">
+      <p class="font-serif italic">
+        "Removing barriers in structural biology." &#8212; Powered by live AlphaFold DB, UniProt, 3Dmol.js, and Google Gemini. Research prototype; not for clinical diagnosis.
+      </p>
+      <p class="font-mono text-[#52524E] shrink-0">FoldShift · Open-Science Edition</p>
+    </div>
+  </footer>
+
+  <!-- ==================== GEMINI API KEY CONFIGURATION MODAL ==================== -->
+  <div id="apiModal" class="hidden fixed inset-0 z-50 bg-[#1A1A1A]/55 backdrop-blur-[1px] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="apiModalTitle">
+    <div class="archival-card max-w-md w-full p-5 space-y-4 shadow-xl border-[#C8C8C0]">
+      <div class="flex items-center justify-between pb-2.5 border-b border-[#DCDCD6]">
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-[#990000]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5" /><path d="m21 2-9.6 9.6" /><path d="m15.5 7.5 3 3L22 7l-3-3" /></svg>
+          <h3 id="apiModalTitle" class="font-serif text-sm font-bold text-[#1A1A1A]">Configure Google Gemini API Key</h3>
+        </div>
+        <button id="closeModalBtn" type="button" class="p-1 text-[#73736E] hover:text-[#1A1A1A] transition" aria-label="Close modal">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+        </button>
+      </div>
+
+      <p class="text-xs text-[#52524E] leading-relaxed">
+        Stored locally in your browser (<code class="font-mono text-[#1A1A1A] bg-[#F2F2EE] px-1 py-0.5 rounded-[2px]">foldshift_gemini_key</code>) with an in-memory fallback and sent directly to Google's Gemini REST API with automatic fallback across
+        <code class="font-mono text-[#990000] bg-[#FDF2F2] px-1 py-0.5 rounded-[2px]">gemini-2.5-flash</code>,
+        <code class="font-mono text-[#1A1A1A] bg-[#F2F2EE] px-1 py-0.5 rounded-[2px]">gemini-2.5-flash-lite</code>, and
+        <code class="font-mono text-[#1A1A1A] bg-[#F2F2EE] px-1 py-0.5 rounded-[2px]">gemini-2.0-flash</code>.
+        Obtain a free key at
+        <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer" class="text-[#990000] underline underline-offset-2 hover:text-[#7A0000]">aistudio.google.com</a>.
+      </p>
+
+      <div>
+        <label for="apiKeyInput" class="block text-xs font-mono text-[#52524E] mb-1.5">Google AI Studio Key</label>
+        <div class="relative">
+          <input
+            id="apiKeyInput"
+            type="password"
+            placeholder="AIzaSy..."
+            autocomplete="off"
+            class="w-full bg-[#FFFFFF] border border-[#C8C8C0] rounded-[3px] pl-3 pr-10 py-2 text-sm font-mono text-[#1A1A1A] placeholder-[#73736E] focus:outline-none focus:border-[#990000] transition"
+          />
+          <button id="toggleKeyVisBtn" type="button"
+            class="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[#73736E] hover:text-[#1A1A1A] transition"
+            aria-label="Toggle API key visibility"
+            title="Show/Hide key">
+            <svg id="eyeIcon" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#F2F2EE]">
+        <button id="clearKeyBtn" type="button" class="px-3 py-1.5 text-xs font-medium rounded-[3px] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition">
+          Clear
+        </button>
+        <button id="cancelModalBtn" type="button" class="px-3 py-1.5 text-xs font-medium rounded-[3px] bg-[#F2F2EE] text-[#1A1A1A] hover:bg-[#DCDCD6] transition">
+          Cancel
+        </button>
+        <button id="saveKeyBtn" type="button" class="px-4 py-1.5 text-xs font-semibold rounded-[3px] bg-[#990000] hover:bg-[#7A0000] text-[#FFFFFF] transition">
+          Save Key
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== APPLICATION LOGIC ==================== -->
+  <script>
+    /*************************************************************************
+     * 1. CRASH-PROOF STORAGE WRAPPER (LOCALSTORAGE + IN-MEMORY FALLBACK)
+     *************************************************************************/
+    const API_STORAGE_KEY = 'foldshift_gemini_key';
+
+    const SafeStorage = (() => {
+      const memoryFallback = Object.create(null);
+      return {
+        get(key) {
+          try {
+            const val = window.localStorage.getItem(key);
+            if (val !== null) return val;
+          } catch (_) {
+            // Sandboxed iframe or strict privacy mode: fall through to memory
+          }
+          return Object.prototype.hasOwnProperty.call(memoryFallback, key)
+            ? memoryFallback[key]
+            : null;
+        },
+        set(key, val) {
+          memoryFallback[key] = String(val);
+          try {
+            window.localStorage.setItem(key, String(val));
+          } catch (_) {
+            // Retained safely in memoryFallback for current session
+          }
+        },
+        remove(key) {
+          delete memoryFallback[key];
+          try {
+            window.localStorage.removeItem(key);
+          } catch (_) {}
+        }
+      };
+    })();
+
+    /*************************************************************************
+     * 2. BIOCHEMICAL AMINO ACID REFERENCE TABLE & PLDDT COLOR HELPER
+     *************************************************************************/
+    const AA_DATA = {
+      A: { three: 'ALA', name: 'Alanine',       charge: 0,   hydro: 'Nonpolar hydrophobic',  size: 'small',      mw: 89.1  },
+      R: { three: 'ARG', name: 'Arginine',      charge: 1,   hydro: 'Basic polar (+)',       size: 'large',      mw: 174.2 },
+      N: { three: 'ASN', name: 'Asparagine',    charge: 0,   hydro: 'Polar uncharged',       size: 'medium',     mw: 132.1 },
+      D: { three: 'ASP', name: 'Aspartate',     charge: -1,  hydro: 'Acidic polar (-)',      size: 'medium',     mw: 133.1 },
+      C: { three: 'CYS', name: 'Cysteine',      charge: 0,   hydro: 'Thiol / metal-binding', size: 'small',      mw: 121.2 },
+      Q: { three: 'GLN', name: 'Glutamine',     charge: 0,   hydro: 'Polar uncharged',       size: 'large',      mw: 146.2 },
+      E: { three: 'GLU', name: 'Glutamate',     charge: -1,  hydro: 'Acidic polar (-)',      size: 'large',      mw: 147.1 },
+      G: { three: 'GLY', name: 'Glycine',       charge: 0,   hydro: 'Flexible tiny',         size: 'tiny',       mw: 75.1  },
+      H: { three: 'HIS', name: 'Histidine',     charge: 0.5, hydro: 'Imidazole polar (+)',   size: 'large',      mw: 155.2 },
+      I: { three: 'ILE', name: 'Isoleucine',    charge: 0,   hydro: 'Branched hydrophobic',  size: 'large',      mw: 131.2 },
+      L: { three: 'LEU', name: 'Leucine',       charge: 0,   hydro: 'Branched hydrophobic',  size: 'large',      mw: 131.2 },
+      K: { three: 'LYS', name: 'Lysine',        charge: 1,   hydro: 'Basic polar (+)',       size: 'large',      mw: 146.2 },
+      M: { three: 'MET', name: 'Methionine',    charge: 0,   hydro: 'Sulfur hydrophobic',    size: 'large',      mw: 149.2 },
+      F: { three: 'PHE', name: 'Phenylalanine', charge: 0,   hydro: 'Aromatic hydrophobic',  size: 'bulky',      mw: 165.2 },
+      P: { three: 'PRO', name: 'Proline',       charge: 0,   hydro: 'Rigid cyclic imino',    size: 'small',      mw: 115.1 },
+      S: { three: 'SER', name: 'Serine',        charge: 0,   hydro: 'Polar hydroxyl',        size: 'small',      mw: 105.1 },
+      T: { three: 'THR', name: 'Threonine',     charge: 0,   hydro: 'Polar hydroxyl',        size: 'small',      mw: 119.1 },
+      W: { three: 'TRP', name: 'Tryptophan',    charge: 0,   hydro: 'Bulky aromatic',        size: 'very bulky', mw: 204.2 },
+      Y: { three: 'TYR', name: 'Tyrosine',      charge: 0,   hydro: 'Polar aromatic',        size: 'bulky',      mw: 181.2 },
+      V: { three: 'VAL', name: 'Valine',        charge: 0,   hydro: 'Branched hydrophobic',  size: 'medium',     mw: 117.1 }
+    };
+    const THREE_TO_ONE = Object.fromEntries(Object.entries(AA_DATA).map(([k, v]) => [v.three, k]));
+
+    // Official AlphaFold pLDDT color ramp
+    function getPlddtHex(score) {
+      if (score > 90) return '#0053D6';
+      if (score >= 70) return '#65CBF3';
+      if (score >= 50) return '#FFDB13';
+      return '#FF7D45';
+    }
+
+    function getPlddtTextClass(score) {
+      if (score > 90) return 'text-[#0053D6]';
+      if (score >= 70) return 'text-[#0369A1]';
+      if (score >= 50) return 'text-[#92400E]';
+      return 'text-[#C2410C]';
+    }
+
+    /*************************************************************************
+     * 3. CRISP EDITORIAL INLINE SVG ICONS (ZERO EMOJIS)
+     *************************************************************************/
+    const ICONS = {
+      spinner: '<svg class="w-3.5 h-3.5 text-[#990000] animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle class="opacity-20" cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/></svg>',
+      check: '<svg class="w-3.5 h-3.5 text-[#0F766E] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+      alert: '<svg class="w-3.5 h-3.5 text-[#B45309] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+      error: '<svg class="w-3.5 h-3.5 text-[#990000] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+      variantTag: '<svg class="w-3.5 h-3.5 text-[#C81E1E] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+      eyeOpen: '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+      eyeOff: '<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/>',
+      moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+      sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>'
+    };
+
+    /*************************************************************************
+     * 4. GLOBAL WORKBENCH STATE & RACE-CONDITION GUARDS
+     *************************************************************************/
+    const STATE = {
+      viewer: null,
+      viewerReady: false,
+      activeRequestId: 0,           // Monotonically increasing pipeline guard
+      pipelineAbortController: null,
+      geminiRequestId: 0,           // Monotonically increasing Gemini report guard
+      geminiAbortController: null,
+      chatAbortController: null,
+      currentData: null,            // { query, uniprot, af, pdbAnalysis, sortedFeatures }
+      isDarkCanvas: false,          // Default: Publication White (#FFFFFF); Toggle: Dark (#111317)
+      isSurfaceOn: false,
+      isSpinning: false,
+      activeDomain: null,
+      showAllDomains: false,
+      activeMeasureResi: null,      // UniProt residue number of drawn 3D distance vector
+      measureShape: null,
+      measureLabel: null,
+      audienceMode: 'researcher',   // 'researcher' | 'plain'
+      lastMarkdownReport: '',
+      activeModelUsed: 'Offline Biophysical',
+      chatHistory: [],              // Gemini API conversation array
+      qaTranscript: []              // Clean { question, answer, engine } array for .md export
+    };
+
+    /*************************************************************************
+     * 5. SAFE ESCAPING, STATUS BANNERS & XSS-SAFE MARKDOWN RENDERER
+     *************************************************************************/
+    function escapeHtml(str) {
+      return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function setPipelinePill(stepNum, state) {
+      const el = document.getElementById(`pipeStep${stepNum}`);
+      if (!el) return;
+      const base = 'px-1.5 py-0.5 rounded-[2px] border transition ';
+      if (state === 'active') {
+        el.className = base + 'border-[#990000] bg-[#FDF2F2] text-[#990000] font-semibold';
+      } else if (state === 'done') {
+        el.className = base + 'border-[#0F766E]/40 bg-[#F0FDFA] text-[#0F766E] font-medium';
+      } else if (state === 'error') {
+        el.className = base + 'border-[#990000] bg-[#990000] text-[#FFFFFF]';
+      } else {
+        el.className = base + 'border-[#DCDCD6] bg-[#FFFFFF] text-[#73736E]';
+      }
+    }
+
+    function setStatus(msg, type = 'loading', offsetFix = null) {
+      const bar = document.getElementById('statusBar');
+      const iconEl = document.getElementById('statusIcon');
+      const textEl = document.getElementById('statusText');
+      const offsetBtn = document.getElementById('offsetFixBtn');
+
+      bar.classList.remove(
+        'hidden',
+        'bg-[#F8F8F6]', 'bg-[#FDF2F2]', 'bg-[#FFFBEB]', 'bg-[#F0FDFA]',
+        'border-[#DCDCD6]', 'border-[#E6C2C2]', 'border-[#FDE68A]', 'border-[#99F6E4]',
+        'text-[#52524E]', 'text-[#990000]', 'text-[#92400E]', 'text-[#0F766E]'
+      );
+
+      if (type === 'loading') {
+        bar.classList.add('bg-[#F8F8F6]', 'border-[#DCDCD6]', 'text-[#52524E]');
+        iconEl.innerHTML = ICONS.spinner;
+      } else if (type === 'success') {
+        bar.classList.add('bg-[#F0FDFA]', 'border-[#99F6E4]', 'text-[#0F766E]');
+        iconEl.innerHTML = ICONS.check;
+      } else if (type === 'warning') {
+        bar.classList.add('bg-[#FFFBEB]', 'border-[#FDE68A]', 'text-[#92400E]');
+        iconEl.innerHTML = ICONS.alert;
+      } else {
+        bar.classList.add('bg-[#FDF2F2]', 'border-[#E6C2C2]', 'text-[#990000]');
+        iconEl.innerHTML = ICONS.error;
+      }
+
+      textEl.textContent = msg;
+
+      if (offsetFix && offsetFix.queryStr) {
+        offsetBtn.textContent = `Open ${offsetFix.queryStr}`;
+        offsetBtn.dataset.targetQuery = offsetFix.queryStr;
+        offsetBtn.classList.remove('hidden');
+      } else {
+        offsetBtn.classList.add('hidden');
+        delete offsetBtn.dataset.targetQuery;
+      }
+    }
+
+    function hideStatus() {
+      document.getElementById('statusBar').classList.add('hidden');
+    }
+
+    function setEngineBadge(label, isAi = false) {
+      document.getElementById('engineText').textContent = label;
+      const dot = document.getElementById('engineDot');
+      dot.className = `w-1.5 h-1.5 rounded-full ${isAi ? 'bg-emerald-600' : 'bg-[#73736E]'}`;
+    }
+
+    /**
+     * XSS-safe Markdown renderer: escapes all HTML entities before applying formatting.
+     */
+    function renderMarkdown(md) {
+      if (!md) return '';
+      const esc = escapeHtml(md);
+      const lines = esc.split('\n');
+      let html = '';
+      let inUl = false;
+      let inOl = false;
+
+      const closeLists = () => {
+        if (inUl) { html += '</ul>'; inUl = false; }
+        if (inOl) { html += '</ol>'; inOl = false; }
+      };
+
+      for (const raw of lines) {
+        const line = raw.trim();
+        if (!line) {
+          closeLists();
+          continue;
+        }
+        const fmt = line
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/`([^`]+)`/g, '<code>$1</code>')
+          .replace(/(^|[^*])\*([^*]+)\*(?!\*)/g, '$1<em>$2</em>');
+
+        if (fmt.startsWith('### ')) {
+          closeLists();
+          html += `<h3>${fmt.slice(4)}</h3>`;
+        } else if (fmt.startsWith('## ')) {
+          closeLists();
+          html += `<h2>${fmt.slice(3)}</h2>`;
+        } else if (/^[-*]\s+/.test(fmt)) {
+          if (inOl) { html += '</ol>'; inOl = false; }
+          if (!inUl) { html += '<ul>'; inUl = true; }
+          html += `<li>${fmt.replace(/^[-*]\s+/, '')}</li>`;
+        } else if (/^\d+\.\s+/.test(fmt)) {
+          if (inUl) { html += '</ul>'; inUl = false; }
+          if (!inOl) { html += '<ol>'; inOl = true; }
+          html += `<li>${fmt.replace(/^\d+\.\s+/, '')}</li>`;
+        } else {
+          closeLists();
+          html += `<p>${fmt}</p>`;
+        }
+      }
+      closeLists();
+      return html;
+    }
+
+    /*************************************************************************
+     * 6. VARIANT QUERY PARSER (GENE SYMBOL OR UNIPROT ACCESSION + MISSENSE)
+     *************************************************************************/
+    const UNIPROT_ACCESSION_REGEX = /^(?:[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9](?:[A-Z][A-Z0-9]{2}[0-9]){1,2})$/;
+
+    function parseVariantQuery(raw) {
+      const cleaned = String(raw || '').trim().replace(/\s+/g, ' ');
+      const parts = cleaned.split(/[\s:_-]+/).filter(Boolean);
+      if (parts.length < 2) {
+        throw new Error('Enter a human gene symbol or UniProt accession plus missense variant (e.g., TP53 R248W or P04637 R248W).');
+      }
+      const identifier = parts[0].toUpperCase();
+      const mutToken = parts[1].replace(/^p\./i, '').toUpperCase();
+      const match = mutToken.match(/^([A-Z])(\d+)([A-Z])$/);
+      if (!match || !AA_DATA[match[1]] || !AA_DATA[match[3]]) {
+        throw new Error(`Invalid missense variant "${parts[1]}". Use single-letter format such as R248W, V600E, or p.C61G.`);
+      }
+      const pos = parseInt(match[2], 10);
+      if (!Number.isFinite(pos) || pos <= 0) {
+        throw new Error('Residue position must be a positive integer.');
+      }
+
+      return {
+        rawId: identifier,
+        isAccession: UNIPROT_ACCESSION_REGEX.test(identifier),
+        gene: identifier,
+        wt: match[1],
+        pos,
+        mut: match[3],
+        mutCode: mutToken,
+        label: `${identifier} ${mutToken}`
+      };
+    }
+
+    /*************************************************************************
+     * 7. RESILIENT UNIPROT REST API PIPELINE
+     *************************************************************************/
+    async function fetchUniProt(query, signal) {
+      let entry = null;
+
+      if (query.isAccession) {
+        const accUrl = `https://rest.uniprot.org/uniprotkb/${encodeURIComponent(query.rawId)}.json`;
+        const res = await fetch(accUrl, { signal });
+        if (!res.ok) {
+          throw new Error(`UniProt accession "${query.rawId}" not found (HTTP ${res.status}).`);
+        }
+        entry = await res.json();
+        if (!entry || !entry.primaryAccession) {
+          throw new Error(`Invalid UniProt response for accession "${query.rawId}".`);
+        }
+      } else {
+        // Primary query: exact human reviewed gene symbol
+        const exactUrl = `https://rest.uniprot.org/uniprotkb/search?query=gene_exact:${encodeURIComponent(query.rawId)}+AND+organism_id:9606+AND+reviewed:true&format=json&size=1`;
+        let res = await fetch(exactUrl, { signal });
+        if (!res.ok) throw new Error(`UniProt REST API returned HTTP ${res.status}.`);
+        let data = await res.json();
+
+        // Fallback query: broader reviewed human gene synonym search
+        if (!data.results || data.results.length === 0) {
+          const fallbackUrl = `https://rest.uniprot.org/uniprotkb/search?query=gene:${encodeURIComponent(query.rawId)}+AND+organism_id:9606+AND+reviewed:true&format=json&size=1`;
+          res = await fetch(fallbackUrl, { signal });
+          if (!res.ok) throw new Error(`UniProt fallback search failed (HTTP ${res.status}).`);
+          data = await res.json();
+        }
+
+        if (!data.results || data.results.length === 0) {
+          throw new Error(`No reviewed human (Homo sapiens) UniProt entry found for "${query.rawId}".`);
+        }
+        entry = data.results[0];
+      }
+
+      const accession = entry.primaryAccession;
+      const geneSymbol = entry.genes?.[0]?.geneName?.value || query.rawId;
+      const proteinName =
+        entry.proteinDescription?.recommendedName?.fullName?.value ||
+        entry.proteinDescription?.submittedName?.[0]?.fullName?.value ||
+        geneSymbol;
+      const seqLength = entry.sequence?.length || 0;
+      const organism = entry.organism?.scientificName || 'Homo sapiens';
+
+      const funcComment = (entry.comments || [])
+        .filter(c => c.commentType === 'FUNCTION')
+        .map(c => (c.texts || []).map(t => t.value).filter(Boolean).join(' '))
+        .filter(Boolean)
+        .join(' ') || 'No functional summary available in UniProt.';
+
+      const diseases = (entry.comments || [])
+        .filter(c => c.commentType === 'DISEASE' && c.disease?.diseaseId)
+        .map(c => c.disease.diseaseId)
+        .slice(0, 6);
+
+      const STRUCTURAL_TYPES = new Set([
+        'Domain', 'Region', 'Active site', 'Binding site',
+        'DNA binding', 'Metal binding', 'Zinc finger',
+        'Disulfide bond', 'Site'
+      ]);
+
+      const features = [];
+      const naturalVariants = [];
+
+      for (const f of (entry.features || [])) {
+        if (!f || !f.location) continue;
+        const start = f.location?.start?.value;
+        const end = f.location?.end?.value;
+        if (typeof start !== 'number') continue;
+
+        if (STRUCTURAL_TYPES.has(f.type)) {
+          const ligandName = f.ligand?.name ? ` (${f.ligand.name})` : '';
+          const desc = (f.description || f.ligand?.name || f.type) + (f.description && ligandName && !f.description.includes(f.ligand.name) ? ligandName : '');
+          features.push({
+            type: f.type,
+            description: desc,
+            start,
+            end: typeof end === 'number' ? end : start
+          });
+        } else if (f.type === 'Natural variant') {
+          // Safely parse alternativeSequence (handle deletions/missing objects cleanly)
+          const altSeq = f.alternativeSequence || {};
+          const orig = typeof altSeq.originalSequence === 'string' ? altSeq.originalSequence : '';
+          const alts = Array.isArray(altSeq.alternativeSequences)
+            ? altSeq.alternativeSequences.filter(s => typeof s === 'string' && s.trim().length > 0)
+            : [];
+
+          const xrefs = [];
+          if (f.featureId) xrefs.push(f.featureId);
+          for (const xr of (f.featureCrossReferences || [])) {
+            if (xr && xr.database && xr.id) xrefs.push(`${xr.database}:${xr.id}`);
+          }
+          for (const ev of (f.evidences || [])) {
+            if (ev && (ev.source === 'dbSNP' || ev.source === 'ClinVar') && ev.id) {
+              xrefs.push(`${ev.source}:${ev.id}`);
+            }
+          }
+
+          naturalVariants.push({
+            pos: start,
+            endPos: typeof end === 'number' ? end : start,
+            original: orig,
+            variations: alts,
+            description: f.description || 'Curated UniProt natural variant',
+            ids: [...new Set(xrefs)].slice(0, 3)
+          });
+        }
+      }
+
+      return {
+        accession,
+        geneSymbol,
+        proteinName,
+        organism,
+        seqLength,
+        funcComment,
+        diseases,
+        features,
+        naturalVariants
+      };
+    }
+
+    function featureOverlapsPos(f, pos) {
+      if (f.type === 'Disulfide bond') {
+        return pos === f.start || pos === f.end;
+      }
+      return pos >= f.start && pos <= f.end;
+    }
+
+    /*************************************************************************
+     * 8. RESILIENT ALPHAFOLD DB API (DYNAMIC URL + MULTI-FRAGMENT SELECTION)
+     *************************************************************************/
+    async function fetchAlphaFold(accession, targetPos, signal) {
+      const metaRes = await fetch(
+        `https://alphafold.ebi.ac.uk/api/prediction/${encodeURIComponent(accession)}`,
+        { signal }
+      );
+      if (!metaRes.ok) {
+        throw new Error(`AlphaFold DB has no predicted 3D model for UniProt ${accession} (HTTP ${metaRes.status}).`);
+      }
+
+      const rawMeta = await metaRes.json();
+      const fragments = (Array.isArray(rawMeta) ? rawMeta : [rawMeta]).filter(m => m && m.pdbUrl);
+      if (fragments.length === 0) {
+        throw new Error(`AlphaFold prediction record for ${accession} does not include a downloadable PDB URL.`);
+      }
+
+      // Select the fragment covering targetPos for multi-fragment long proteins, else fall back to entry 0
+      let selected = fragments.find(
+        m => typeof m.uniprotStart === 'number' &&
+             typeof m.uniprotEnd === 'number' &&
+             targetPos >= m.uniprotStart &&
+             targetPos <= m.uniprotEnd
+      );
+      if (!selected) {
+        selected = fragments[0];
+      }
+
+      const pdbRes = await fetch(selected.pdbUrl, { signal });
+      if (!pdbRes.ok) {
+        throw new Error(`Failed to download AlphaFold PDB coordinates (HTTP ${pdbRes.status}).`);
+      }
+      const pdbText = await pdbRes.text();
+
+      return {
+        entryId: selected.entryId || `AF-${accession}-F1`,
+        pdbUrl: selected.pdbUrl,
+        globalPlddt: typeof selected.globalMetricValue === 'number' ? selected.globalMetricValue : null,
+        uniprotStart: typeof selected.uniprotStart === 'number' ? selected.uniprotStart : 1,
+        uniprotEnd: typeof selected.uniprotEnd === 'number' ? selected.uniprotEnd : null,
+        fragmentCount: fragments.length,
+        pdbText
+      };
+    }
+
+    /*************************************************************************
+     * 9. HARDENED IN-BROWSER PDB PARSER & 8.0 Å EUCLIDEAN CONTACT ENGINE
+     *************************************************************************/
+    function analyzePdbSite(pdbText, afMeta, targetPos, expectedWt, expectedMut, geneSymbol, naturalVariants) {
+      const rawAtoms = [];
+      const seenPdbResi = new Set();
+      const lines = pdbText.split('\n');
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (!line.startsWith('ATOM  ')) continue;
+
+        // Strictly Cα atoms and ignore alternate conformations other than ' ' or 'A'
+        const atomName = line.slice(12, 16).trim();
+        if (atomName !== 'CA') continue;
+        const altLoc = line.length > 16 ? line.charAt(16) : ' ';
+        if (altLoc !== ' ' && altLoc !== 'A') continue;
+
+        const resName = line.slice(17, 20).trim();
+        const pdbResi = parseInt(line.slice(22, 26).trim(), 10);
+        const x = parseFloat(line.slice(30, 38).trim());
+        const y = parseFloat(line.slice(38, 46).trim());
+        const z = parseFloat(line.slice(46, 54).trim());
+        const plddt = parseFloat(line.slice(60, 66).trim());
+
+        if (Number.isNaN(pdbResi) || Number.isNaN(x) || Number.isNaN(y) || Number.isNaN(z)) continue;
+        if (seenPdbResi.has(pdbResi)) continue; // Zero duplicate residue entries
+        seenPdbResi.add(pdbResi);
+
+        rawAtoms.push({
+          resName,
+          one: THREE_TO_ONE[resName] || '?',
+          pdbResi,
+          x, y, z,
+          plddt: Number.isNaN(plddt) ? 0 : plddt
+        });
+      }
+
+      if (rawAtoms.length === 0) {
+        throw new Error('AlphaFold PDB file did not contain readable Cα atomic coordinates.');
+      }
+
+      // Map PDB numbering to UniProt canonical numbering for multi-fragment structures
+      const minPdbResi = rawAtoms[0].pdbResi;
+      const maxPdbResi = rawAtoms[rawAtoms.length - 1].pdbResi;
+      const needsFragmentOffset = afMeta.uniprotStart > 1 && maxPdbResi < afMeta.uniprotStart;
+      const offsetDelta = needsFragmentOffset ? (afMeta.uniprotStart - 1) : 0;
+
+      const caAtoms = [];
+      const atomByResi = new Map();
+      for (const a of rawAtoms) {
+        const resi = a.pdbResi + offsetDelta;
+        const item = { ...a, resi };
+        caAtoms.push(item);
+        atomByResi.set(resi, item);
+      }
+
+      const modelStart = caAtoms[0].resi;
+      const modelEnd = caAtoms[caAtoms.length - 1].resi;
+      const target = atomByResi.get(targetPos);
+
+      if (!target) {
+        throw new Error(
+          `Residue coordinate ${targetPos} is outside the AlphaFold model (${afMeta.entryId} covers residues ${modelStart}–${modelEnd}).`
+        );
+      }
+
+      // Index curated UniProt Natural Variants by canonical position
+      const varByPos = new Map();
+      for (const nv of naturalVariants) {
+        if (!varByPos.has(nv.pos)) varByPos.set(nv.pos, []);
+        varByPos.get(nv.pos).push(nv);
+      }
+
+      const posVars = varByPos.get(targetPos) || [];
+      const exactClinicalMatches = posVars.filter(v => v.variations.includes(expectedMut));
+      const sameSiteOtherVars = posVars.filter(v => !v.variations.includes(expectedMut));
+
+      // Detect likely initiator-Methionine (+1) numbering offset on wild-type mismatch
+      const wtMatches = target.one === expectedWt;
+      let offsetSuggestion = null;
+      if (!wtMatches) {
+        const plusOneAtom = atomByResi.get(targetPos + 1);
+        const minusOneAtom = atomByResi.get(targetPos - 1);
+        if (plusOneAtom && plusOneAtom.one === expectedWt) {
+          offsetSuggestion = {
+            delta: +1,
+            suggestedPos: targetPos + 1,
+            queryStr: `${geneSymbol} ${expectedWt}${targetPos + 1}${expectedMut}`,
+            reason: `Likely initiator-Methionine (+1) numbering offset (classic mature-protein numbering vs. canonical UniProt sequence: residue ${targetPos + 1} is ${plusOneAtom.resName}).`
+          };
+        } else if (minusOneAtom && minusOneAtom.one === expectedWt) {
+          offsetSuggestion = {
+            delta: -1,
+            suggestedPos: targetPos - 1,
+            queryStr: `${geneSymbol} ${expectedWt}${targetPos - 1}${expectedMut}`,
+            reason: `Nearby match at residue ${targetPos - 1} (${minusOneAtom.resName}) suggests a -1 isoform numbering shift.`
+          };
+        }
+      }
+
+      // Exact Euclidean Cα distances <= 8.0 Å
+      const neighbors = [];
+      let hotspotNeighborsCount = 0;
+
+      for (const atom of caAtoms) {
+        if (atom.resi === targetPos) continue;
+        const dist = Math.hypot(atom.x - target.x, atom.y - target.y, atom.z - target.z);
+        if (dist <= 8.0) {
+          const isSeqAdj = Math.abs(atom.resi - targetPos) <= 2;
+          const clinicalVariants = varByPos.get(atom.resi) || [];
+          if (clinicalVariants.length > 0) hotspotNeighborsCount++;
+          neighbors.push({
+            ...atom,
+            dist: Number(dist.toFixed(2)),
+            isSeqAdj,
+            clinicalVariants
+          });
+        }
+      }
+      neighbors.sort((a, b) => a.dist - b.dist);
+
+      const burialClass =
+        neighbors.length >= 10 ? 'Deep Core' :
+        neighbors.length >= 6  ? 'Semi-Buried' : 'Surface';
+
+      return {
+        caAtoms,
+        atomByResi,
+        modelStart,
+        modelEnd,
+        offsetDelta,
+        target,
+        foundWt: target.one,
+        wtMatches,
+        offsetSuggestion,
+        plddt: target.plddt,
+        length: caAtoms.length,
+        neighbors,
+        tertiaryCount: neighbors.filter(n => !n.isSeqAdj).length,
+        burialClass,
+        exactClinicalMatches,
+        sameSiteOtherVars,
+        hotspotNeighborsCount
+      };
+    }
+
+    /*************************************************************************
+     * 10. ROCK-SOLID 3DMOL.JS WEBGL VIEWER
+     *************************************************************************/
+    function initViewer() {
+      const container = document.getElementById('viewer-container');
+      if (typeof window.$3Dmol === 'undefined') {
+        STATE.viewerReady = false;
+        container.innerHTML = `
+          <div class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-[#F8F8F6] text-[#52524E]">
+            <p class="font-serif text-sm font-bold text-[#990000]">3Dmol.js Library Unavailable</p>
+            <p class="text-xs mt-1 max-w-sm">Could not load 3Dmol.js from CDN. Check network access; all UniProt, PDB coordinate math, and Gemini features remain active.</p>
+          </div>`;
+        setStatus('3Dmol.js failed to load from CDN. Data analysis will still run.', 'warning');
+        return;
+      }
+
+      try {
+        STATE.viewer = window.$3Dmol.createViewer(container, {
+          backgroundColor: '#FFFFFF',
+          antialias: true
+        });
+        STATE.viewerReady = true;
+      } catch (err) {
+        STATE.viewerReady = false;
+        setStatus('WebGL molecular viewport could not initialize in this browser.', 'error');
+        return;
+      }
+
+      if (typeof ResizeObserver !== 'undefined') {
+        const ro = new ResizeObserver(() => {
+          if (STATE.viewer) {
+            STATE.viewer.resize();
+            STATE.viewer.render();
+          }
+        });
+        ro.observe(container);
+      } else {
+        window.addEventListener('resize', () => {
+          if (STATE.viewer) {
+            STATE.viewer.resize();
+            STATE.viewer.render();
+          }
+        });
+      }
+    }
+
+    function toPdbResi(uniprotResi) {
+      if (!STATE.currentData) return uniprotResi;
+      return uniprotResi - STATE.currentData.pdbAnalysis.offsetDelta;
+    }
+
+    function toggleViewerBackground() {
+      STATE.isDarkCanvas = !STATE.isDarkCanvas;
+      const bgHex = STATE.isDarkCanvas ? '#111317' : '#FFFFFF';
+      const frame = document.getElementById('viewerFrame');
+      const loader = document.getElementById('viewerLoader');
+      const loaderTxt = document.getElementById('viewerLoaderText');
+      const btn = document.getElementById('bgToggleBtn');
+      const icon = document.getElementById('bgToggleIcon');
+      const txt = document.getElementById('bgToggleText');
+
+      frame.style.backgroundColor = bgHex;
+      if (STATE.isDarkCanvas) {
+        loader.classList.remove('bg-[#FFFFFF]/90');
+        loader.classList.add('bg-[#111317]/90');
+        loaderTxt.classList.replace('text-[#1A1A1A]', 'text-[#F8F8F6]');
+        btn.className = 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#1A1A1A] border border-[#1A1A1A] text-[#FFFFFF] hover:bg-[#363633] transition inline-flex items-center gap-1';
+        icon.innerHTML = ICONS.sun;
+        txt.textContent = 'White BG';
+      } else {
+        loader.classList.remove('bg-[#111317]/90');
+        loader.classList.add('bg-[#FFFFFF]/90');
+        loaderTxt.classList.replace('text-[#F8F8F6]', 'text-[#1A1A1A]');
+        btn.className = 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition inline-flex items-center gap-1';
+        icon.innerHTML = ICONS.moon;
+        txt.textContent = 'Dark BG';
+      }
+
+      if (STATE.viewer && STATE.viewerReady) {
+        STATE.viewer.setBackgroundColor(bgHex);
+        if (STATE.isSurfaceOn) {
+          STATE.viewer.removeAllSurfaces();
+          STATE.viewer.addSurface(window.$3Dmol.SurfaceType.VDW, {
+            opacity: STATE.isDarkCanvas ? 0.24 : 0.16,
+            color: STATE.isDarkCanvas ? '#A1A1AA' : '#94A3B8'
+          });
+        }
+        STATE.viewer.render();
+      }
+    }
+
+    function syncVectorControlsUI() {
+      const hasVector = STATE.activeMeasureResi !== null;
+      document.getElementById('measureBadge').classList.toggle('hidden', !hasVector);
+      document.getElementById('clearVectorTableBtn').classList.toggle('hidden', !hasVector);
+    }
+
+    function clearMeasurement(rerender = true) {
+      if (STATE.viewer && STATE.viewerReady) {
+        try { if (STATE.measureShape) STATE.viewer.removeShape(STATE.measureShape); } catch (_) {}
+        try { if (STATE.measureLabel) STATE.viewer.removeLabel(STATE.measureLabel); } catch (_) {}
+        if (rerender) STATE.viewer.render();
+      }
+      STATE.measureShape = null;
+      STATE.measureLabel = null;
+      STATE.activeMeasureResi = null;
+
+      document.querySelectorAll('.contact-row').forEach(r => r.classList.remove('bg-[#FFFBEB]'));
+      syncVectorControlsUI();
+    }
+
+    function drawMeasurementOnViewer(neighborResi, zoom = true) {
+      if (!STATE.currentData || !STATE.viewer || !STATE.viewerReady) return;
+      const { query, pdbAnalysis } = STATE.currentData;
+      const neighbor = pdbAnalysis.neighbors.find(n => n.resi === neighborResi);
+      if (!neighbor) return;
+
+      try { if (STATE.measureShape) STATE.viewer.removeShape(STATE.measureShape); } catch (_) {}
+      try { if (STATE.measureLabel) STATE.viewer.removeLabel(STATE.measureLabel); } catch (_) {}
+
+      const t = pdbAnalysis.target;
+      const v = STATE.viewer;
+
+      // Dashed Burnished-Amber (#B45309) 3D distance cylinder
+      STATE.measureShape = v.addCylinder({
+        start: { x: t.x, y: t.y, z: t.z },
+        end: { x: neighbor.x, y: neighbor.y, z: neighbor.z },
+        radius: 0.085,
+        color: '#B45309',
+        dashed: true,
+        dashLength: 0.35,
+        gapLength: 0.22
+      });
+
+      // Exact midpoint Ångström label
+      STATE.measureLabel = v.addLabel(`${neighbor.dist.toFixed(2)} Å`, {
+        position: {
+          x: (t.x + neighbor.x) / 2,
+          y: (t.y + neighbor.y) / 2,
+          z: (t.z + neighbor.z) / 2
+        },
+        backgroundColor: '#1A1A1A',
+        fontColor: '#FDE68A',
+        borderColor: '#B45309',
+        borderThickness: 1,
+        fontSize: 11,
+        font: 'JetBrains Mono, monospace',
+        inFront: true,
+        backgroundOpacity: 0.94
+      });
+
+      STATE.activeMeasureResi = neighborResi;
+
+      if (zoom) {
+        v.zoomTo({ resi: [t.pdbResi, neighbor.pdbResi] }, 550);
+      }
+      v.render();
+
+      document.getElementById('measureBadgeText').textContent =
+        `${query.wt}${query.pos} — ${neighbor.one}${neighbor.resi}: ${neighbor.dist.toFixed(2)} Å`;
+
+      document.querySelectorAll('.contact-row').forEach(r => {
+        r.classList.toggle('bg-[#FFFBEB]', parseInt(r.dataset.resi, 10) === neighborResi);
+      });
+      syncVectorControlsUI();
+    }
+
+    function renderStructure(zoomTarget = 'mutation') {
+      if (!STATE.currentData || !STATE.viewer || !STATE.viewerReady) return;
+      const { af, query, pdbAnalysis } = STATE.currentData;
+      const colorMode = document.getElementById('colorMode').value;
+      const preservedMeasure = STATE.activeMeasureResi;
+      const v = STATE.viewer;
+
+      // Preserve current camera view matrix when only styling/surface/colorMode changed
+      let savedView = null;
+      if (zoomTarget === 'none') {
+        try { savedView = v.getView(); } catch (_) { savedView = null; }
+      }
+
+      STATE.measureShape = null;
+      STATE.measureLabel = null;
+      v.clear();
+      v.setBackgroundColor(STATE.isDarkCanvas ? '#111317' : '#FFFFFF');
+      v.addModel(af.pdbText, 'pdb');
+
+      // 1. Base Cartoon Coloring
+      if (colorMode === 'plddt') {
+        v.setStyle({}, {
+          cartoon: {
+            thickness: 0.35,
+            colorfunc: atom => getPlddtHex(atom.b)
+          }
+        });
+      } else if (colorMode === 'ss') {
+        v.setStyle({}, { cartoon: { color: 'ssPyMOL', thickness: 0.35 } });
+      } else {
+        v.setStyle({}, { cartoon: { color: 'spectrum', thickness: 0.35 } });
+      }
+
+      // 2. Highlight active 1D-selected UniProt domain in Academic Violet (#6D28D9)
+      if (STATE.activeDomain) {
+        const sPdb = Math.max(1, toPdbResi(STATE.activeDomain.start));
+        const ePdb = Math.max(1, toPdbResi(STATE.activeDomain.end));
+        const sel = STATE.activeDomain.type === 'Disulfide bond'
+          ? { resi: [sPdb, ePdb] }
+          : { resi: `${sPdb}-${ePdb}` };
+        v.addStyle(sel, { cartoon: { color: '#6D28D9', thickness: 0.52 } });
+      }
+
+      // 3. Highlight 8.0 Å spatial neighbors in Deep Teal (#0F766E) sticks
+      const neighborPdbResis = pdbAnalysis.neighbors.map(n => n.pdbResi);
+      if (neighborPdbResis.length > 0) {
+        v.addStyle({ resi: neighborPdbResis }, { stick: { color: '#0F766E', radius: 0.14 } });
+      }
+
+      // 4. Highlight mutated residue in Crimson (#C81E1E) sticks + translucent sphere
+      v.addStyle({ resi: pdbAnalysis.target.pdbResi }, {
+        stick: { color: '#C81E1E', radius: 0.30 },
+        sphere: { color: '#C81E1E', opacity: 0.28, radius: 1.55 }
+      });
+
+      // 5. Coordinate-Anchored Label at exact { x, y, z } of mutated Cα
+      v.addLabel(query.mutCode, {
+        position: {
+          x: pdbAnalysis.target.x,
+          y: pdbAnalysis.target.y,
+          z: pdbAnalysis.target.z
+        },
+        backgroundColor: '#990000',
+        fontColor: '#FFFFFF',
+        borderColor: '#7A0000',
+        borderThickness: 1,
+        fontSize: 12,
+        font: 'JetBrains Mono, monospace',
+        inFront: true,
+        backgroundOpacity: 0.94
+      });
+
+      // 6. Preserve Optional Translucent VDW Surface (contrasting opacity for White vs Dark BG)
+      v.removeAllSurfaces();
+      if (STATE.isSurfaceOn) {
+        v.addSurface(window.$3Dmol.SurfaceType.VDW, {
+          opacity: STATE.isDarkCanvas ? 0.24 : 0.16,
+          color: STATE.isDarkCanvas ? '#A1A1AA' : '#94A3B8'
+        });
+      }
+
+      // 7. Re-apply active measurement vector if present
+      if (preservedMeasure !== null) {
+        drawMeasurementOnViewer(preservedMeasure, false);
+      }
+
+      // 8. Camera Framing / Preservation
+      if (zoomTarget === 'none' && savedView) {
+        try { v.setView(savedView); } catch (_) {}
+      } else if (zoomTarget === 'domain' && STATE.activeDomain) {
+        const sPdb = Math.max(1, toPdbResi(STATE.activeDomain.start));
+        const ePdb = Math.max(1, toPdbResi(STATE.activeDomain.end));
+        const sel = STATE.activeDomain.type === 'Disulfide bond'
+          ? { resi: [sPdb, ePdb] }
+          : { resi: `${sPdb}-${ePdb}` };
+        v.zoomTo(sel, 600);
+      } else if (zoomTarget === 'mutation') {
+        v.zoomTo({ resi: [pdbAnalysis.target.pdbResi, ...neighborPdbResis.slice(0, 6)] }, 650);
+      } else if (zoomTarget === 'all') {
+        v.zoomTo({}, 600);
+      }
+
+      // 9. Preserve Spin State
+      v.spin(STATE.isSpinning ? 'y' : false, 0.38);
+      v.render();
+    }
+
+    function takeSnapshotPNG() {
+      if (!STATE.viewer || !STATE.viewerReady || !STATE.currentData) return;
+      STATE.viewer.render();
+      const uri = STATE.viewer.pngURI();
+      const { geneSymbol } = STATE.currentData.uniprot;
+      const { mutCode } = STATE.currentData.query;
+      const a = document.createElement('a');
+      a.href = uri;
+      a.download = `FoldShift_${geneSymbol}_${mutCode}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    /*************************************************************************
+     * 11. HiDPI INTERACTIVE 1D-TO-3D pLDDT TRACK + CLICK/TAP ZOOM + CHIPS
+     *************************************************************************/
+    function getTrackBounds() {
+      if (!STATE.currentData) return { start: 1, end: 1, span: 1 };
+      const { uniprot, pdbAnalysis } = STATE.currentData;
+      const start = 1;
+      const end = Math.max(pdbAnalysis.modelEnd, uniprot.seqLength || 1);
+      return { start, end, span: Math.max(1, end - start + 1) };
+    }
+
+    function drawPlddtTrackCanvas() {
+      if (!STATE.currentData) return;
+      const { pdbAnalysis, query } = STATE.currentData;
+      const canvas = document.getElementById('plddtTrackCanvas');
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const W = rect.width;
+      const H = rect.height;
+      const { start, span } = getTrackBounds();
+
+      ctx.fillStyle = '#F2F2EE';
+      ctx.fillRect(0, 0, W, H);
+
+      // Per-residue AlphaFold pLDDT color bars
+      const stepW = W / span;
+      for (const atom of pdbAnalysis.caAtoms) {
+        ctx.fillStyle = getPlddtHex(atom.plddt);
+        const x = ((atom.resi - start) / span) * W;
+        ctx.fillRect(x, 0, Math.max(1.2, stepW + 0.4), H);
+      }
+
+      // Highlight selected domain overlay in Academic Violet (#6D28D9)
+      if (STATE.activeDomain) {
+        const x1 = ((STATE.activeDomain.start - start) / span) * W;
+        const x2 = ((STATE.activeDomain.end - start + 1) / span) * W;
+        ctx.fillStyle = 'rgba(109, 40, 217, 0.48)';
+        ctx.fillRect(x1, 0, Math.max(3, x2 - x1), H);
+        ctx.strokeStyle = '#6D28D9';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(x1 + 0.5, 0.5, Math.max(2, x2 - x1 - 1), H - 1);
+      }
+
+      // Crisp Crimson (#990000) vertical pin at mutation coordinate
+      const mutX = ((query.pos - start + 0.5) / span) * W;
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(Math.max(0, mutX - 2.2), 0, 4.4, H);
+      ctx.fillStyle = '#990000';
+      ctx.fillRect(Math.max(0, mutX - 1.25), 0, 2.5, H);
+    }
+
+    function bindTrackInteractions() {
+      const wrapper = document.getElementById('plddtTrackWrapper');
+      const canvas = document.getElementById('plddtTrackCanvas');
+      const hoverLine = document.getElementById('trackHoverLine');
+      const readout = document.getElementById('trackHoverReadout');
+
+      // ResizeObserver keeps HiDPI canvas sharp across mobile/desktop resizes
+      if (typeof ResizeObserver !== 'undefined') {
+        const ro = new ResizeObserver(() => {
+          if (STATE.currentData) drawPlddtTrackCanvas();
+        });
+        ro.observe(wrapper);
+      } else {
+        window.addEventListener('resize', () => {
+          if (STATE.currentData) drawPlddtTrackCanvas();
+        });
+      }
+
+      const resolveResidueAtX = (clientX) => {
+        const rect = canvas.getBoundingClientRect();
+        const { start, end, span } = getTrackBounds();
+        const relX = Math.max(0, Math.min(rect.width, clientX - rect.left));
+        const resIdx = Math.max(start, Math.min(end, start + Math.floor((relX / Math.max(1, rect.width)) * span)));
+        return { relX, resIdx };
+      };
+
+      const updateTooltip = (clientX, prefix = '') => {
+        if (!STATE.currentData) return null;
+        const { pdbAnalysis } = STATE.currentData;
+        const { relX, resIdx } = resolveResidueAtX(clientX);
+        const atom = pdbAnalysis.atomByResi.get(resIdx);
+
+        hoverLine.style.left = `${relX}px`;
+        hoverLine.classList.remove('hidden');
+
+        if (atom) {
+          readout.textContent = `${prefix}${atom.resi} · ${atom.one} (${atom.resName}) · pLDDT ${atom.plddt.toFixed(1)}`;
+        } else {
+          readout.textContent = `${prefix}Pos ${resIdx} (outside model)`;
+        }
+        return { resIdx, atom };
+      };
+
+      const zoomToTrackCoordinate = (clientX) => {
+        if (!STATE.currentData || !STATE.viewer || !STATE.viewerReady) return;
+        const hit = updateTooltip(clientX, 'Focused ');
+        if (hit && hit.atom) {
+          STATE.viewer.zoomTo({ resi: hit.atom.pdbResi }, 500);
+          STATE.viewer.render();
+        }
+      };
+
+      const resetReadout = () => {
+        hoverLine.classList.add('hidden');
+        if (STATE.currentData) {
+          const { start, end } = getTrackBounds();
+          readout.textContent = `${start} — ${end} aa`;
+        }
+      };
+
+      canvas.addEventListener('mousemove', e => updateTooltip(e.clientX));
+      canvas.addEventListener('mouseleave', resetReadout);
+      canvas.addEventListener('click', e => zoomToTrackCoordinate(e.clientX));
+
+      let touchStartX = null;
+      let lastTouchX = null;
+      canvas.addEventListener('touchstart', e => {
+        if (e.touches && e.touches[0]) {
+          touchStartX = e.touches[0].clientX;
+          lastTouchX = touchStartX;
+          updateTooltip(touchStartX);
+        }
+      }, { passive: true });
+
+      canvas.addEventListener('touchmove', e => {
+        if (e.touches && e.touches[0]) {
+          lastTouchX = e.touches[0].clientX;
+          updateTooltip(lastTouchX);
+        }
+      }, { passive: true });
+
+      canvas.addEventListener('touchend', () => {
+        if (touchStartX !== null && lastTouchX !== null && Math.abs(lastTouchX - touchStartX) < 12) {
+          zoomToTrackCoordinate(lastTouchX);
+        }
+        touchStartX = null;
+        lastTouchX = null;
+      });
+    }
+
+    function renderSequenceAndDomains() {
+      if (!STATE.currentData) return;
+      const { query, sortedFeatures } = STATE.currentData;
+      const { start, end, span } = getTrackBounds();
+
+      document.getElementById('trackHoverReadout').textContent = `${start} — ${end} aa`;
+      document.getElementById('seqStartLabel').textContent = `${start}`;
+      document.getElementById('seqQ1Label').textContent = `${Math.round(start + span * 0.25)}`;
+      document.getElementById('seqMidLabel').textContent = `${Math.round(start + span * 0.5)}`;
+      document.getElementById('seqQ3Label').textContent = `${Math.round(start + span * 0.75)}`;
+      document.getElementById('seqEndLabel').textContent = `${end}`;
+
+      drawPlddtTrackCanvas();
+
+      // Crimson Mutation Pin Badge above the 1D Track
+      const mutPct = Math.min(95, Math.max(5, ((query.pos - start + 0.5) / span) * 100));
+      document.getElementById('mutationPinContainer').innerHTML = `
+        <div style="left: ${mutPct.toFixed(2)}%;" class="absolute -translate-x-1/2 flex flex-col items-center">
+          <span class="px-1.5 py-0.5 rounded-[2px] bg-[#990000] text-[#FFFFFF] text-[10px] font-mono font-semibold tabular-nums whitespace-nowrap leading-none">
+            ${escapeHtml(query.mutCode)}
+          </span>
+        </div>`;
+
+      // Active Domain Clear Controls
+      const clearInlineBtn = document.getElementById('clearDomainInlineBtn');
+      const headerDomainPill = document.getElementById('domainActivePill');
+      if (STATE.activeDomain) {
+        const range = STATE.activeDomain.start === STATE.activeDomain.end
+          ? `${STATE.activeDomain.start}`
+          : `${STATE.activeDomain.start}–${STATE.activeDomain.end}`;
+        clearInlineBtn.classList.remove('hidden');
+        document.getElementById('domainActivePillText').textContent = `${STATE.activeDomain.type} [${range}]`;
+        headerDomainPill.classList.remove('hidden');
+      } else {
+        clearInlineBtn.classList.add('hidden');
+        headerDomainPill.classList.add('hidden');
+      }
+
+      // Sorted & Collapsible UniProt Domain/Feature Chips (First 4 by default)
+      const pillsEl = document.getElementById('domainPillsContainer');
+      const toggleWrap = document.getElementById('domainToggleWrap');
+      const toggleText = document.getElementById('domainToggleText');
+      const toggleChevron = document.getElementById('domainToggleChevron');
+      const summaryCount = document.getElementById('domainSummaryCount');
+
+      if (sortedFeatures.length === 0) {
+        pillsEl.innerHTML = '<p class="text-xs text-[#73736E] col-span-full">No curated UniProt functional domains or site annotations found for this entry.</p>';
+        toggleWrap.classList.add('hidden');
+        return;
+      }
+
+      const DEFAULT_VISIBLE = 4;
+      const visibleList = STATE.showAllDomains ? sortedFeatures : sortedFeatures.slice(0, DEFAULT_VISIBLE);
+
+      pillsEl.innerHTML = visibleList.map((f, idx) => {
+        const isActive = STATE.activeDomain &&
+          STATE.activeDomain.start === f.start &&
+          STATE.activeDomain.end === f.end &&
+          STATE.activeDomain.type === f.type &&
+          STATE.activeDomain.description === f.description;
+
+        const range = f.start === f.end ? `${f.start}` : `${f.start}–${f.end}`;
+        const fullTitle = `${f.type} [${range}]: ${f.description}`;
+
+        let cardCls = 'bg-[#F8F8F6] border-[#DCDCD6] hover:border-[#990000]/50 hover:bg-[#FFFFFF] text-[#52524E]';
+        if (isActive) {
+          cardCls = 'bg-[#F5F3FF] border-[#6D28D9] text-[#1A1A1A] ring-1 ring-[#6D28D9]/25';
+        } else if (f.overlaps) {
+          cardCls = 'bg-[#FFFFFF] border-[#E6C2C2] hover:border-[#990000] text-[#1A1A1A]';
+        }
+
+        const overlapBadge = f.overlaps
+          ? '<span class="px-1.5 py-0.5 rounded-[2px] text-[9px] font-mono font-semibold uppercase tracking-wide bg-[#FDF2F2] text-[#990000] border border-[#E6C2C2] shrink-0">Overlaps site</span>'
+          : '';
+
+        return `
+          <button type="button" data-feat-idx="${idx}" title="${escapeHtml(fullTitle)}"
+            class="domain-chip text-left px-3 py-2 rounded-[3px] border transition flex flex-col gap-1 min-w-0 ${cardCls}">
+            <div class="flex items-center justify-between gap-1.5 w-full">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="text-[10px] font-semibold uppercase tracking-wide text-[#73736E] shrink-0">${escapeHtml(f.type)}</span>
+                <span class="text-[10px] font-mono tabular-nums text-[#52524E] shrink-0">[${range}]</span>
+              </div>
+              ${overlapBadge}
+            </div>
+            <span class="text-xs font-medium text-[#1A1A1A] truncate w-full">${escapeHtml(f.description)}</span>
+          </button>`;
+      }).join('');
+
+      pillsEl.querySelectorAll('.domain-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const f = visibleList[parseInt(btn.dataset.featIdx, 10)];
+          const same = STATE.activeDomain &&
+            STATE.activeDomain.start === f.start &&
+            STATE.activeDomain.end === f.end &&
+            STATE.activeDomain.type === f.type &&
+            STATE.activeDomain.description === f.description;
+
+          if (same) {
+            clearActiveDomain();
+          } else {
+            STATE.activeDomain = f;
+            renderSequenceAndDomains();
+            renderStructure('domain');
+          }
+        });
+      });
+
+      if (sortedFeatures.length > DEFAULT_VISIBLE) {
+        toggleWrap.classList.remove('hidden');
+        toggleText.textContent = STATE.showAllDomains
+          ? 'Show fewer'
+          : `Show all ${sortedFeatures.length} annotations`;
+        toggleChevron.classList.toggle('rotate-180', STATE.showAllDomains);
+        const overlapCount = sortedFeatures.filter(f => f.overlaps).length;
+        summaryCount.textContent = overlapCount > 0 ? `${overlapCount} overlapping site` : `${sortedFeatures.length} total`;
+      } else {
+        toggleWrap.classList.add('hidden');
+      }
+    }
+
+    function clearActiveDomain() {
+      STATE.activeDomain = null;
+      renderSequenceAndDomains();
+      renderStructure('mutation');
+    }
+
+    /*************************************************************************
+     * 12. 3D SPATIAL MICROENVIRONMENT TABLE & CLINICAL RECORD BANNER
+     *************************************************************************/
+    function renderContactsTable(pdbAnalysis) {
+      const tbody = document.getElementById('contactsTableBody');
+      const hotspotBanner = document.getElementById('hotspotBanner');
+      const hotspotText = document.getElementById('hotspotBannerText');
+
+      if (pdbAnalysis.hotspotNeighborsCount > 0) {
+        hotspotText.innerHTML =
+          `<strong class="font-semibold text-[#990000]">3D Hotspot Cluster:</strong> <span class="font-mono tabular-nums font-semibold text-[#1A1A1A]">${pdbAnalysis.hotspotNeighborsCount}</span> neighboring residue(s) within 8.0 &#8491; carry curated UniProt clinical variants.`;
+        hotspotBanner.classList.remove('hidden');
+      } else {
+        hotspotBanner.classList.add('hidden');
+      }
+
+      if (pdbAnalysis.neighbors.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="px-3.5 py-5 text-center text-[#73736E] font-sans">No C&#945; contacts found within 8.0 &#8491; (solvent-exposed or disordered segment).</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = pdbAnalysis.neighbors.map(n => {
+        const contactBadge = n.isSeqAdj
+          ? '<span class="inline-flex items-center px-2 py-0.5 rounded-[2px] bg-[#F2F2EE] border border-[#DCDCD6] text-[#52524E] text-[10px] font-sans font-medium whitespace-nowrap">Seq Adj</span>'
+          : '<span class="inline-flex items-center px-2 py-0.5 rounded-[2px] bg-[#F0FDFA] border border-[#99F6E4] text-[#0F766E] text-[10px] font-sans font-medium whitespace-nowrap">3D Tertiary</span>';
+
+        const clinTooltip = n.clinicalVariants
+          .map(v => `${v.original || n.one}${v.pos}${v.variations.length ? v.variations.join('/') : 'del'}: ${v.description}`)
+          .join(' | ');
+
+        const clinCell = n.clinicalVariants.length > 0
+          ? `<span class="inline-flex items-center gap-1.5 font-sans text-xs whitespace-nowrap" title="${escapeHtml(clinTooltip)}">
+               ${ICONS.variantTag}
+               <span class="font-mono tabular-nums font-semibold text-[#990000]">${n.clinicalVariants.length}</span>
+               <span class="text-[#52524E]">${n.clinicalVariants.length === 1 ? 'variant' : 'variants'}</span>
+             </span>`
+          : '<span class="text-[#C8C8C0]">&#8212;</span>';
+
+        return `
+          <tr class="contact-row hover:bg-[#F8F8F6] cursor-pointer transition" data-resi="${n.resi}">
+            <td class="px-3.5 py-2.5 whitespace-nowrap">
+              <span class="font-semibold text-[#1A1A1A]">${escapeHtml(n.one)}${n.resi}</span>
+              <span class="text-[#73736E] ml-1 text-[11px]">${escapeHtml(n.resName)}</span>
+            </td>
+            <td class="px-3.5 py-2.5 whitespace-nowrap text-[#B45309] font-semibold">${n.dist.toFixed(2)} &#8491;</td>
+            <td class="px-3.5 py-2.5 whitespace-nowrap">${contactBadge}</td>
+            <td class="px-3.5 py-2.5 whitespace-nowrap text-right font-medium ${getPlddtTextClass(n.plddt)}">${n.plddt.toFixed(1)}</td>
+            <td class="px-3.5 py-2.5 whitespace-nowrap">${clinCell}</td>
+          </tr>`;
+      }).join('');
+
+      tbody.querySelectorAll('.contact-row').forEach(row => {
+        row.addEventListener('click', () => {
+          const resi = parseInt(row.dataset.resi, 10);
+          if (STATE.activeMeasureResi === resi) {
+            clearMeasurement(true);
+          } else {
+            drawMeasurementOnViewer(resi, true);
+          }
+        });
+      });
+    }
+
+    function renderClinicalCard(pdbAnalysis, query) {
+      const card = document.getElementById('clinicalCard');
+      const idsEl = document.getElementById('clinicalIds');
+      const descEl = document.getElementById('clinicalDesc');
+
+      if (pdbAnalysis.exactClinicalMatches.length > 0) {
+        const m = pdbAnalysis.exactClinicalMatches[0];
+        idsEl.textContent = m.ids.join(' · ') || 'UniProt Curated';
+        descEl.innerHTML = `<strong class="text-[#1A1A1A] font-semibold">Exact Match (${escapeHtml(query.mutCode)}):</strong> ${escapeHtml(m.description)}`;
+        card.classList.remove('hidden');
+      } else if (pdbAnalysis.sameSiteOtherVars.length > 0) {
+        const list = pdbAnalysis.sameSiteOtherVars
+          .slice(0, 2)
+          .map(v => `${v.original || pdbAnalysis.foundWt}${v.pos}${v.variations.length ? v.variations.join('/') : 'del'} (${v.description})`)
+          .join('; ');
+        idsEl.textContent = `${pdbAnalysis.sameSiteOtherVars.length} record(s) at pos ${query.pos}`;
+        descEl.innerHTML = `<strong class="text-[#1A1A1A] font-semibold">Known Clinical Site (Residue ${query.pos}):</strong> ${escapeHtml(list)}`;
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    }
+
+    /*************************************************************************
+     * 13. DETERMINISTIC OFFLINE BIOPHYSICAL REPORT (NO API KEY REQUIRED)
+     *************************************************************************/
+    function generateLocalReport(data, mode) {
+      const { query, uniprot, pdbAnalysis } = data;
+      const wtInfo = AA_DATA[query.wt];
+      const mutInfo = AA_DATA[query.mut];
+      const mwDelta = (mutInfo.mw - wtInfo.mw).toFixed(1);
+      const mwSign = Number(mwDelta) > 0 ? '+' : '';
+
+      const overlapping = uniprot.features.filter(f => featureOverlapsPos(f, query.pos));
+      const nearby = uniprot.features.filter(f =>
+        !featureOverlapsPos(f, query.pos) &&
+        (Math.abs(query.pos - f.start) <= 10 || Math.abs(query.pos - f.end) <= 10)
+      );
+
+      const confTier =
+        pdbAnalysis.plddt > 90 ? 'Very High confidence (rigid, well-ordered structural fold)' :
+        pdbAnalysis.plddt >= 70 ? 'Confident backbone fold' :
+        pdbAnalysis.plddt >= 50 ? 'Low confidence (flexible loop)' :
+        'Very low confidence (intrinsically disordered segment)';
+
+      const burialDesc =
+        pdbAnalysis.burialClass === 'Deep Core'
+          ? 'Deep Core packing — elevated steric clash and thermodynamic ΔΔG destabilization risk'
+          : pdbAnalysis.burialClass === 'Semi-Buried'
+          ? 'Semi-Buried pocket — likely perturbs local tertiary stability or binding geometry'
+          : 'Surface-exposed position — higher tolerance for core folding; primary risk is protein or ligand interface disruption';
+
+      const clinicalSummary = pdbAnalysis.exactClinicalMatches.length > 0
+        ? `Exact curated UniProt match for \`${query.mutCode}\`: ${pdbAnalysis.exactClinicalMatches[0].description} (${pdbAnalysis.exactClinicalMatches[0].ids.join(', ') || 'UniProt'}).`
+        : pdbAnalysis.sameSiteOtherVars.length > 0
+        ? `Curated UniProt clinical variants are documented at residue ${query.pos}: ${pdbAnalysis.sameSiteOtherVars.slice(0, 3).map(v => `\`${v.original || pdbAnalysis.foundWt}${v.pos}${v.variations.length ? v.variations.join('/') : 'del'}\``).join(', ')}.`
+        : 'No exact UniProt Natural Variant entry is recorded for this specific substitution.';
+
+      const mismatchLine = !pdbAnalysis.wtMatches
+        ? `\n- **Numbering Notice:** Canonical AlphaFold/UniProt residue ${query.pos} is **${pdbAnalysis.target.resName} (${pdbAnalysis.foundWt})**, not ${wtInfo.name} (${query.wt}). ${pdbAnalysis.offsetSuggestion ? pdbAnalysis.offsetSuggestion.reason : 'Verify transcript isoform or signal-peptide numbering.'}`
+        : '';
+
+      if (mode === 'plain') {
+        return `### Structural & Stability Summary
+- In **${uniprot.geneSymbol}** (*${uniprot.proteinName}*), residue **${query.pos}** switches from **${wtInfo.name}** (${wtInfo.hydro}, ${wtInfo.size}) to **${mutInfo.name}** (${mutInfo.hydro}, ${mutInfo.size}).${mismatchLine}
+- **3D Location:** AlphaFold confidence at this residue is **${pdbAnalysis.plddt.toFixed(1)}/100** (${confTier}). It sits in a **${pdbAnalysis.burialClass.toLowerCase()}** pocket contacting **${pdbAnalysis.neighbors.length} neighboring amino acids** within 8.0 Å.
+
+### Functional & Clinical Context
+- **Annotated Protein Regions:** ${overlapping.length > 0 ? overlapping.slice(0, 3).map(f => `${f.type} (${f.description})`).join('; ') : 'Outside curated UniProt domain or active-site boundaries.'}
+- **Clinical Evidence:** ${clinicalSummary}
+- **3D Neighborhood Sensitivity:** ${pdbAnalysis.hotspotNeighborsCount > 0 ? `**${pdbAnalysis.hotspotNeighborsCount} neighboring residues** in 3D space also carry curated UniProt variants, indicating a structurally sensitive hotspot.` : 'No curated variant cluster detected on immediate 3D neighbors.'}
+- **Disease Associations:** ${uniprot.diseases.length ? uniprot.diseases.join(', ') : 'Refer to the UniProt record for phenotype links.'}
+
+*Click **Add Gemini Key** in the top bar to unlock deep mechanistic AI reasoning and tailored wet-lab assay suggestions.*`;
+      }
+
+      return `### Structural Context & Packing Density
+- **Substitution:** \`${uniprot.geneSymbol} ${query.mutCode}\` (${wtInfo.name} -> ${mutInfo.name}; ΔMW \`${mwSign}${mwDelta} Da\`; Formal Charge \`${wtInfo.charge} -> ${mutInfo.charge}\`; Biophysical shift: **${wtInfo.hydro}** -> **${mutInfo.hydro}**).${mismatchLine}
+- **AlphaFold Confidence:** **pLDDT ${pdbAnalysis.plddt.toFixed(1)} / 100** — ${confTier}.
+- **3D Packing Density:** **${pdbAnalysis.neighbors.length} Cα contacts <= 8.0 Å** (**${pdbAnalysis.tertiaryCount}** non-adjacent 3D tertiary contacts) — ${burialDesc}.
+
+### Overlapping & Nearby UniProt Annotations
+${overlapping.length > 0
+  ? overlapping.slice(0, 5).map(f => `- **${f.type} [${f.start}–${f.end}]:** ${f.description}`).join('\n')
+  : '- No curated UniProt domain, catalytic site, or binding motif directly overlaps residue ' + query.pos + '.'}
+${nearby.length > 0
+  ? `- **Adjacent Features (±10 aa):** ${nearby.slice(0, 3).map(f => `${f.type} [${f.start}–${f.end}] (${f.description})`).join('; ')}.`
+  : ''}
+
+### Clinical Evidence & Nearest 3D Contacts
+- **Variant Record:** ${clinicalSummary}
+- **3D Hotspot Cluster:** **${pdbAnalysis.hotspotNeighborsCount}** of **${pdbAnalysis.neighbors.length}** neighboring residues within 8.0 Å carry curated UniProt Natural Variants.
+- **Closest 3D Contacts:** ${pdbAnalysis.neighbors.slice(0, 6).map(n => `\`${n.one}${n.resi}\` (${n.dist.toFixed(2)} Å)`).join(', ') || 'None'}.
+- **Associated Diseases:** ${uniprot.diseases.length ? uniprot.diseases.join(', ') : 'None listed in UniProt summary.'}
+
+*Configure a free Gemini API key via **Add Gemini Key** to synthesize full mechanistic hypotheses (electrostatics, hydrogen bonding, steric clashes) and wet-lab validation plans.*`;
+    }
+
+    /*************************************************************************
+     * 14. GEMINI REST API WITH AUTO-FALLBACK & IMMEDIATE INVALID-KEY SHORT-CIRCUIT
+     *************************************************************************/
+    const GEMINI_FALLBACK_MODELS = [
+      'gemini-2.5-flash',
+      'gemini-2.5-flash-lite',
+      'gemini-2.0-flash'
+    ];
+
+    async function callGeminiWithFallback(contents, systemInstructionText, signal) {
+      const apiKey = SafeStorage.get(API_STORAGE_KEY);
+      if (!apiKey) throw new Error('NO_API_KEY');
+
+      let lastErr = null;
+
+      for (const model of GEMINI_FALLBACK_MODELS) {
+        if (signal && signal.aborted) {
+          throw new DOMException('Aborted', 'AbortError');
+        }
+
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+        const payload = {
+          contents,
+          systemInstruction: { parts: [{ text: systemInstructionText }] }
+        };
+
+        const retryDelays = [1000, 2000];
+        for (let attempt = 0; attempt <= retryDelays.length; attempt++) {
+          try {
+            const res = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+              signal
+            });
+
+            if (res.ok) {
+              const json = await res.json();
+              const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (!text) throw new Error(`Empty response from ${model}`);
+              return { text, model };
+            }
+
+            const errJson = await res.json().catch(() => ({}));
+            const msg = errJson?.error?.message || `HTTP ${res.status}`;
+
+            // Immediately stop fallback on invalid/unauthorized API key errors
+            const isInvalidKey =
+              res.status === 401 ||
+              res.status === 403 ||
+              (res.status === 400 && /api.?key|key.*invalid|not valid|invalid.*argument.*key/i.test(msg));
+
+            if (isInvalidKey) {
+              const authErr = new Error(`Invalid or unauthorized Gemini API key (${msg}). Click "Add Gemini Key" to update it.`);
+              authErr.isAuthError = true;
+              throw authErr;
+            }
+
+            // Model unavailable -> move immediately to next fallback model
+            if (res.status === 404 || res.status === 400) {
+              lastErr = new Error(`${model}: ${msg}`);
+              break;
+            }
+
+            // Transient throttle or server error -> backoff retry
+            if ((res.status === 429 || res.status >= 500) && attempt < retryDelays.length) {
+              await new Promise((resolve, reject) => {
+                const t = setTimeout(resolve, retryDelays[attempt]);
+                if (signal) {
+                  signal.addEventListener('abort', () => {
+                    clearTimeout(t);
+                    reject(new DOMException('Aborted', 'AbortError'));
+                  }, { once: true });
+                }
+              });
+              continue;
+            }
+
+            lastErr = new Error(`${model}: ${msg}`);
+            break;
+          } catch (err) {
+            if (err.name === 'AbortError' || err.isAuthError) throw err;
+            lastErr = err;
+            if (attempt < retryDelays.length) {
+              await new Promise(r => setTimeout(r, retryDelays[attempt]));
+              continue;
+            }
+            break;
+          }
+        }
+      }
+      throw lastErr || new Error('Unable to reach Gemini API across fallback models.');
+    }
+
+    function buildGroundedDataContext(data) {
+      const { query, uniprot, af, pdbAnalysis } = data;
+      const wtInfo = AA_DATA[query.wt];
+      const mutInfo = AA_DATA[query.mut];
+      const overlapping = uniprot.features.filter(f => featureOverlapsPos(f, query.pos));
+      const nearby = uniprot.features.filter(f =>
+        !featureOverlapsPos(f, query.pos) &&
+        (Math.abs(query.pos - f.start) <= 10 || Math.abs(query.pos - f.end) <= 10)
+      );
+
+      return `VERIFIED LIVE STRUCTURAL & SEQUENCE DATA:
+- Variant: ${uniprot.geneSymbol} ${query.mutCode} (${wtInfo.name} [${wtInfo.hydro}, ${wtInfo.size}, ${wtInfo.mw} Da] -> ${mutInfo.name} [${mutInfo.hydro}, ${mutInfo.size}, ${mutInfo.mw} Da])
+- Protein: ${uniprot.proteinName} (UniProt: ${uniprot.accession}, Organism: ${uniprot.organism}, Length: ${uniprot.seqLength || pdbAnalysis.length} aa)
+- PDB Wild-Type Verification: ${pdbAnalysis.wtMatches ? `Verified (${pdbAnalysis.foundWt} at pos ${query.pos})` : `WARNING MISMATCH: canonical PDB has ${pdbAnalysis.foundWt} at pos ${query.pos}. ${pdbAnalysis.offsetSuggestion ? pdbAnalysis.offsetSuggestion.reason : ''}`}
+- AlphaFold Structure: ${af.entryId} (Residues ${pdbAnalysis.modelStart}-${pdbAnalysis.modelEnd}) | Local pLDDT at pos ${query.pos}: ${pdbAnalysis.plddt.toFixed(1)}/100 | Global Mean pLDDT: ${af.globalPlddt ?? 'N/A'}
+- Burial & Packing: ${pdbAnalysis.burialClass} (${pdbAnalysis.neighbors.length} CA contacts <= 8.0 Å, ${pdbAnalysis.tertiaryCount} non-adjacent 3D tertiary contacts)
+- 8.0 Å Spatial Neighbors: ${pdbAnalysis.neighbors.slice(0, 12).map(n => `${n.one}${n.resi} (${n.dist.toFixed(2)} Å, ${n.isSeqAdj ? 'Seq Adj' : '3D Tertiary'}, pLDDT ${n.plddt.toFixed(1)}${n.clinicalVariants.length ? `, ${n.clinicalVariants.length} UniProt variants` : ''})`).join('; ') || 'None'}
+- 3D Hotspot Cluster: ${pdbAnalysis.hotspotNeighborsCount} neighboring residues within 8.0 Å carry curated UniProt variants
+- Exact UniProt Clinical Match: ${pdbAnalysis.exactClinicalMatches.map(v => `${v.description} (${v.ids.join(', ')})`).join('; ') || 'None'}
+- Overlapping UniProt Features: ${overlapping.map(f => `${f.type} [${f.start}-${f.end}]: ${f.description}`).join('; ') || 'None'}
+- Nearby UniProt Features (±10 aa): ${nearby.slice(0, 5).map(f => `${f.type} [${f.start}-${f.end}]: ${f.description}`).join('; ') || 'None'}
+- Associated Diseases: ${uniprot.diseases.join(', ') || 'None listed'}
+- Protein Function: ${uniprot.funcComment.slice(0, 750)}`;
+    }
+
+    async function runGeminiAnalysis(expectedPipelineId = STATE.activeRequestId) {
+      if (!STATE.currentData) return;
+      if (!SafeStorage.get(API_STORAGE_KEY)) {
+        openApiModal();
+        return;
+      }
+
+      // Abort any previous in-flight Gemini report request
+      if (STATE.geminiAbortController) {
+        STATE.geminiAbortController.abort();
+      }
+      const geminiReqId = ++STATE.geminiRequestId;
+      const controller = new AbortController();
+      STATE.geminiAbortController = controller;
+
+      const isPlain = STATE.audienceMode === 'plain';
+      const systemPrompt = isPlain
+        ? 'You are a clear, scholarly science communicator translating 3D structural biology into accessible Plain English. Stay 100% grounded in the provided AlphaFold PDB contacts and UniProt data. Never use emojis.'
+        : 'You are a senior structural biologist writing a concise academic peer-review note. Provide rigorous mechanistic variant analysis strictly grounded in the provided AlphaFold PDB contacts, pLDDT confidence, and UniProt domain/clinical annotations. Never fabricate coordinates or use emojis.';
+
+      const prompt = `${buildGroundedDataContext(STATE.currentData)}
+
+Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a Plain English audience (students, clinicians, or cross-disciplinary readers)' : 'a Lab Researcher (structural biology and biochemistry depth)'} using these exact Markdown H3 headings:
+### Structural & Thermodynamic Impact
+### Functional & Pathway Mechanism
+### Clinical & Hotspot Context
+### Suggested Wet-Lab Validation Assays`;
+
+      document.getElementById('reportModeLabel').textContent = `Synthesizing with Gemini (${isPlain ? 'Plain English' : 'Lab Researcher'})...`;
+      document.getElementById('reportContent').innerHTML =
+        `<div class="flex items-center gap-2.5 py-6 text-[#990000] text-xs font-mono">${ICONS.spinner}<span>Generating grounded structural impact report...</span></div>`;
+
+      try {
+        const { text, model } = await callGeminiWithFallback(
+          [{ role: 'user', parts: [{ text: prompt }] }],
+          systemPrompt,
+          controller.signal
+        );
+
+        // Stale-request protection: discard if user switched variants or re-triggered AI
+        if (geminiReqId !== STATE.geminiRequestId || expectedPipelineId !== STATE.activeRequestId) {
+          return;
+        }
+
+        STATE.lastMarkdownReport = text;
+        STATE.activeModelUsed = model;
+        STATE.chatHistory = [
+          { role: 'user', parts: [{ text: prompt }] },
+          { role: 'model', parts: [{ text }] }
+        ];
+
+        document.getElementById('reportModeLabel').textContent =
+          `${isPlain ? 'Plain English' : 'Lab Researcher'} · Grounded in AlphaFold + UniProt`;
+        setEngineBadge(model, true);
+        document.getElementById('runGeminiBtnText').textContent = 'Re-run AI';
+        document.getElementById('reportContent').innerHTML = renderMarkdown(text);
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+        if (geminiReqId !== STATE.geminiRequestId || expectedPipelineId !== STATE.activeRequestId) return;
+
+        // Preserve local biophysical analysis cleanly so the UI never breaks
+        const fallbackMd = generateLocalReport(STATE.currentData, STATE.audienceMode);
+        STATE.lastMarkdownReport = fallbackMd;
+        STATE.activeModelUsed = 'Offline Biophysical (Fallback)';
+        document.getElementById('reportModeLabel').textContent = 'Gemini Unavailable — Showing Local Biophysical Analysis';
+        setEngineBadge('Offline Biophysical', false);
+        document.getElementById('reportContent').innerHTML =
+          `<div class="mb-3 p-3 rounded-[3px] bg-[#FDF2F2] border border-[#E6C2C2] text-xs text-[#990000] flex items-start justify-between gap-2">
+             <div class="flex items-start gap-2">${ICONS.error}<span>${escapeHtml(err.message)}</span></div>
+             ${err.isAuthError ? '<button type="button" onclick="openApiModal()" class="px-2 py-0.5 rounded-[2px] bg-[#990000] text-[#FFFFFF] font-semibold shrink-0">Update Key</button>' : ''}
+           </div>` +
+          renderMarkdown(fallbackMd);
+      }
+    }
+
+    /*************************************************************************
+     * 15. INTERACTIVE FOLLOW-UP Q&A WORKBENCH (GROUNDED AI + OFFLINE FALLBACK)
+     *************************************************************************/
+    function buildLocalAnswerForQuestion(question, data) {
+      const { query, uniprot, pdbAnalysis } = data;
+      const wtInfo = AA_DATA[query.wt];
+      const mutInfo = AA_DATA[query.mut];
+      const q = question.toLowerCase();
+      const topNeighbors = pdbAnalysis.neighbors.slice(0, 4).map(n => `\`${n.one}${n.resi}\` (${n.dist.toFixed(2)} Å)`).join(', ');
+      const overlapping = uniprot.features.filter(f => featureOverlapsPos(f, query.pos)).map(f => `${f.type} (${f.description})`).slice(0, 3).join('; ');
+
+      if (q.includes('binding') || q.includes('affinity')) {
+        return `**Offline Structural Note (${uniprot.geneSymbol} ${query.mutCode}):** Residue ${query.pos} (${wtInfo.hydro} -> ${mutInfo.hydro}; local pLDDT **${pdbAnalysis.plddt.toFixed(1)}**) overlaps **${overlapping || 'no direct curated UniProt binding motif'}** and sits in a **${pdbAnalysis.burialClass}** microenvironment contacting ${topNeighbors || 'no close residues'}. Changes in formal charge (${wtInfo.charge} -> ${mutInfo.charge}) or side-chain bulk (${wtInfo.size} -> ${mutInfo.size}) near binding interfaces commonly alter Kd via electrostatic disruption or steric clashes.`;
+      }
+      if (q.includes('control') || q.includes('mutagenesis') || q.includes('assay')) {
+        return `**Offline Experimental Control Suggestion (${uniprot.geneSymbol} ${query.mutCode}):** Pair your \`${query.mutCode}\` construct with a conservative substitution preserving wild-type charge/size at position ${query.pos} alongside wild-type **${uniprot.geneSymbol}**. Verify fold stability via **nanoDSF (ΔTm)** or **Circular Dichroism** before quantifying functional output across ${overlapping || uniprot.geneSymbol + ' target interactions'}.`;
+      }
+      if (q.includes('hotspot') || q.includes('cluster') || q.includes('neighbor')) {
+        const clinNeighbors = pdbAnalysis.neighbors.filter(n => n.clinicalVariants.length > 0).slice(0, 5)
+          .map(n => `\`${n.one}${n.resi}\` (${n.dist.toFixed(2)} Å, ${n.clinicalVariants.length} var)`)
+          .join(', ');
+        return `**Offline 3D Hotspot Summary (${uniprot.geneSymbol} ${query.mutCode}):** Within 8.0 Å of residue ${query.pos}, **${pdbAnalysis.hotspotNeighborsCount} of ${pdbAnalysis.neighbors.length} spatial neighbors** carry curated UniProt variants (${pdbAnalysis.tertiaryCount} non-adjacent 3D tertiary contacts)${clinNeighbors ? `: ${clinNeighbors}` : ''}. Dense variant clustering across 3D contacts marks an evolutionarily constrained functional or structural hub.`;
+      }
+      return `**Offline Structural Context (${uniprot.geneSymbol} ${query.mutCode}):** Residue ${query.pos} (${pdbAnalysis.burialClass}, pLDDT **${pdbAnalysis.plddt.toFixed(1)}**) has **${pdbAnalysis.neighbors.length} Cα contacts <= 8.0 Å** (${topNeighbors || 'none'}) and overlaps ${overlapping || 'no curated UniProt active site'}.`;
+    }
+
+    async function sendChatQuestion(question) {
+      if (!STATE.currentData || !question.trim()) return;
+
+      const reqPipelineId = STATE.activeRequestId;
+      const thread = document.getElementById('chatThread');
+      const input = document.getElementById('chatInput');
+      const sendBtn = document.getElementById('chatSendBtn');
+      const cleanQ = question.trim();
+
+      thread.classList.remove('hidden');
+      input.value = '';
+
+      // User Inquiry Bubble
+      const uDiv = document.createElement('div');
+      uDiv.className = 'p-3 rounded-[3px] bg-[#F8F8F6] border border-[#DCDCD6] text-xs text-[#1A1A1A]';
+      uDiv.innerHTML = `<span class="block text-[10px] font-mono uppercase tracking-wider text-[#990000] font-semibold mb-1">Inquiry</span>${escapeHtml(cleanQ)}`;
+      thread.appendChild(uDiv);
+
+      // Deterministic Offline Q&A + Add Key CTA when no Gemini key is saved
+      if (!SafeStorage.get(API_STORAGE_KEY)) {
+        const localAns = buildLocalAnswerForQuestion(cleanQ, STATE.currentData);
+        STATE.qaTranscript.push({ question: cleanQ, answer: localAns, engine: 'Offline Biophysical' });
+
+        const hintDiv = document.createElement('div');
+        hintDiv.className = 'p-3 rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] space-y-2.5';
+        hintDiv.innerHTML = `
+          <div class="prose-editorial">${renderMarkdown(localAns)}</div>
+          <div class="pt-2 border-t border-[#F2F2EE] flex items-center justify-between gap-2 text-[11px] text-[#52524E]">
+            <span>Add a free Google Gemini API key for open-ended structural reasoning.</span>
+            <button type="button" class="open-key-cta px-2.5 py-1 rounded-[3px] bg-[#990000] hover:bg-[#7A0000] text-[#FFFFFF] font-semibold shrink-0 transition">Add Key</button>
+          </div>`;
+        hintDiv.querySelector('.open-key-cta').addEventListener('click', openApiModal);
+        thread.appendChild(hintDiv);
+        thread.scrollTop = thread.scrollHeight;
+        return;
+      }
+
+      if (STATE.chatAbortController) {
+        STATE.chatAbortController.abort();
+      }
+      const chatController = new AbortController();
+      STATE.chatAbortController = chatController;
+
+      input.disabled = true;
+      sendBtn.disabled = true;
+
+      const aDiv = document.createElement('div');
+      aDiv.className = 'p-3 rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] prose-editorial';
+      aDiv.innerHTML = `<div class="flex items-center gap-2 text-xs font-mono text-[#990000]">${ICONS.spinner}<span>Synthesizing grounded answer...</span></div>`;
+      thread.appendChild(aDiv);
+      thread.scrollTop = thread.scrollHeight;
+
+      if (STATE.chatHistory.length === 0) {
+        STATE.chatHistory.push({
+          role: 'user',
+          parts: [{ text: `Structural context for Q&A:\n${buildGroundedDataContext(STATE.currentData)}` }]
+        });
+        STATE.chatHistory.push({
+          role: 'model',
+          parts: [{ text: 'Understood. I will answer concisely and strictly grounded in the provided AlphaFold and UniProt structural data.' }]
+        });
+      }
+
+      STATE.chatHistory.push({ role: 'user', parts: [{ text: cleanQ }] });
+
+      const sysPrompt = STATE.audienceMode === 'plain'
+        ? 'Answer concisely in clear Plain English grounded strictly in the provided AlphaFold PDB and UniProt data. Never use emojis.'
+        : 'Answer concisely as a senior structural biologist grounded strictly in the provided AlphaFold PDB and UniProt data. Never use emojis.';
+
+      try {
+        const { text, model } = await callGeminiWithFallback(STATE.chatHistory, sysPrompt, chatController.signal);
+        if (reqPipelineId !== STATE.activeRequestId) return;
+
+        STATE.chatHistory.push({ role: 'model', parts: [{ text }] });
+        STATE.qaTranscript.push({ question: cleanQ, answer: text, engine: model });
+        aDiv.innerHTML = `<span class="block text-[10px] font-mono uppercase tracking-wider text-[#73736E] mb-1.5">FoldShift AI · ${escapeHtml(model)}</span>${renderMarkdown(text)}`;
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+        if (reqPipelineId !== STATE.activeRequestId) return;
+
+        STATE.chatHistory.pop();
+        aDiv.innerHTML = `<div class="flex items-start gap-2 text-xs text-[#990000]">${ICONS.error}<span>${escapeHtml(err.message)}</span></div>`;
+      } finally {
+        if (reqPipelineId === STATE.activeRequestId) {
+          input.disabled = false;
+          sendBtn.disabled = false;
+          input.focus();
+          thread.scrollTop = thread.scrollHeight;
+        }
+      }
+    }
+
+    /*************************************************************************
+     * 16. MAIN 3-STAGE BIOINFORMATICS PIPELINE (RACE-CONDITION PROTECTED)
+     *************************************************************************/
+    async function runPipeline(rawQuery) {
+      // Cancel all in-flight pipeline, report, and chat requests immediately
+      if (STATE.pipelineAbortController) STATE.pipelineAbortController.abort();
+      if (STATE.geminiAbortController) STATE.geminiAbortController.abort();
+      if (STATE.chatAbortController) STATE.chatAbortController.abort();
+
+      const reqId = ++STATE.activeRequestId;
+      const controller = new AbortController();
+      STATE.pipelineAbortController = controller;
+
+      const loader = document.getElementById('viewerLoader');
+      const loaderText = document.getElementById('viewerLoaderText');
+      const analyzeBtn = document.getElementById('analyzeBtn');
+
+      // Reset transient per-variant UI
+      clearMeasurement(false);
+      STATE.activeDomain = null;
+      STATE.showAllDomains = false;
+      STATE.chatHistory = [];
+      STATE.qaTranscript = [];
+      document.getElementById('chatThread').innerHTML = '';
+      document.getElementById('chatThread').classList.add('hidden');
+      document.getElementById('chatInput').disabled = false;
+      document.getElementById('chatSendBtn').disabled = false;
+      document.getElementById('clinicalCard').classList.add('hidden');
+      setPipelinePill(1, 'idle');
+      setPipelinePill(2, 'idle');
+      setPipelinePill(3, 'idle');
+
+      let query;
+      try {
+        query = parseVariantQuery(rawQuery);
+      } catch (err) {
+        setStatus(err.message, 'error');
+        return;
+      }
+
+      // Highlight matching index preset
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        const isMatch = btn.dataset.val.toUpperCase() === query.label.toUpperCase();
+        btn.classList.toggle('text-[#990000]', isMatch);
+        btn.classList.toggle('font-bold', isMatch);
+        btn.classList.toggle('decoration-[#990000]', isMatch);
+      });
+
+      analyzeBtn.disabled = true;
+      loader.classList.remove('hidden');
+
+      let activeStep = 1;
+      try {
+        // STAGE 1: UniProt REST API
+        activeStep = 1;
+        setPipelinePill(1, 'active');
+        loaderText.textContent = `1/3 Querying UniProt for ${query.rawId}...`;
+        setStatus(`Fetching reviewed human UniProt entry & clinical variants for ${query.rawId}...`, 'loading');
+        const uniprot = await fetchUniProt(query, controller.signal);
+        if (reqId !== STATE.activeRequestId) return;
+        setPipelinePill(1, 'done');
+
+        // Normalize display gene symbol if user entered a UniProt accession
+        query.gene = uniprot.geneSymbol;
+        query.label = `${uniprot.geneSymbol} ${query.mutCode}`;
+
+        // STAGE 2: AlphaFold DB API (with multi-fragment selection)
+        activeStep = 2;
+        setPipelinePill(2, 'active');
+        loaderText.textContent = `2/3 Fetching AlphaFold 3D PDB (${uniprot.accession})...`;
+        setStatus(`Downloading live AlphaFold 3D coordinates for ${uniprot.accession}...`, 'loading');
+        const af = await fetchAlphaFold(uniprot.accession, query.pos, controller.signal);
+        if (reqId !== STATE.activeRequestId) return;
+        setPipelinePill(2, 'done');
+
+        // STAGE 3: Hardened In-Browser 3D Coordinate Math
+        activeStep = 3;
+        setPipelinePill(3, 'active');
+        loaderText.textContent = `3/3 Computing 8.0 Å microenvironment around ${query.mutCode}...`;
+        setStatus(`Parsing Cα coordinates & 8.0 Å spatial contacts around ${query.mutCode}...`, 'loading');
+        const pdbAnalysis = analyzePdbSite(
+          af.pdbText,
+          af,
+          query.pos,
+          query.wt,
+          query.mut,
+          uniprot.geneSymbol,
+          uniprot.naturalVariants
+        );
+        if (reqId !== STATE.activeRequestId) return;
+        setPipelinePill(3, 'done');
+
+        // Sort UniProt features: overlapping site FIRST, then functional priority & span tightness
+        const PRIORITY = {
+          'Active site': 1, 'Binding site': 2, 'DNA binding': 3, 'Metal binding': 4,
+          'Zinc finger': 5, 'Disulfide bond': 6, 'Site': 7, 'Domain': 8, 'Region': 9
+        };
+        const sortedFeatures = uniprot.features
+          .map(f => ({ ...f, overlaps: featureOverlapsPos(f, query.pos) }))
+          .sort((a, b) => {
+            if (a.overlaps !== b.overlaps) return a.overlaps ? -1 : 1;
+            const pa = PRIORITY[a.type] || 20;
+            const pb = PRIORITY[b.type] || 20;
+            if (pa !== pb) return pa - pb;
+            return (a.end - a.start) - (b.end - b.start);
+          });
+
+        STATE.currentData = { query, uniprot, af, pdbAnalysis, sortedFeatures };
+
+        // Populate 4-Card Key Metrics Grid
+        const fragTag = af.fragmentCount > 1 ? ` · Frag ${pdbAnalysis.modelStart}–${pdbAnalysis.modelEnd}` : '';
+        document.getElementById('viewerSubtitle').textContent =
+          `${uniprot.proteinName} (${uniprot.accession}) · ${query.mutCode}${fragTag}`;
+        document.getElementById('metricUniprot').innerHTML =
+          `<a href="https://www.uniprot.org/uniprotkb/${encodeURIComponent(uniprot.accession)}" target="_blank" rel="noopener noreferrer" class="text-[#990000] hover:underline underline-offset-2">${escapeHtml(uniprot.accession)}</a>`;
+        document.getElementById('metricProtein').textContent = uniprot.proteinName;
+        document.getElementById('metricProtein').title = uniprot.proteinName;
+
+        const plddtEl = document.getElementById('metricPlddt');
+        plddtEl.textContent = `${pdbAnalysis.plddt.toFixed(1)} / 100`;
+        plddtEl.className = `text-sm sm:text-base font-bold font-mono tabular-nums mt-1 ${getPlddtTextClass(pdbAnalysis.plddt)}`;
+        document.getElementById('metricConfidence').textContent =
+          pdbAnalysis.plddt > 90 ? 'Very High Confidence' :
+          pdbAnalysis.plddt >= 70 ? 'Confident Fold' :
+          pdbAnalysis.plddt >= 50 ? 'Low Confidence Loop' : 'Disordered Segment';
+
+        document.getElementById('metricNeighbors').textContent = `${pdbAnalysis.neighbors.length} residues ≤ 8.0 Å`;
+        document.getElementById('metricBurial').textContent =
+          `${pdbAnalysis.burialClass} · ${pdbAnalysis.tertiaryCount} tertiary`;
+
+        const shiftText = `${AA_DATA[query.wt].hydro} → ${AA_DATA[query.mut].hydro}`;
+        const shiftEl = document.getElementById('metricShift');
+        shiftEl.textContent = shiftText;
+        shiftEl.title = `${AA_DATA[query.wt].name} (${AA_DATA[query.wt].size}) → ${AA_DATA[query.mut].name} (${AA_DATA[query.mut].size})`;
+
+        const verifyEl = document.getElementById('metricVerify');
+        if (pdbAnalysis.wtMatches) {
+          verifyEl.innerHTML = `${ICONS.check}<span class="text-[#0F766E] truncate">Verified ${escapeHtml(query.wt)} at pos ${query.pos}</span>`;
+        } else {
+          verifyEl.innerHTML = `${ICONS.alert}<span class="text-[#B45309] truncate">PDB has ${escapeHtml(pdbAnalysis.foundWt)} at pos ${query.pos}</span>`;
+        }
+
+        // Render 3D Structure, 1D Track + Sorted Chips, Contacts Table & Clinical Card
+        renderStructure('mutation');
+        renderSequenceAndDomains();
+        renderContactsTable(pdbAnalysis);
+        renderClinicalCard(pdbAnalysis, query);
+
+        loader.classList.add('hidden');
+        document.getElementById('exportBtn').disabled = false;
+        document.getElementById('exportBriefInlineBtn').disabled = false;
+
+        if (!pdbAnalysis.wtMatches) {
+          const offsetMsg = pdbAnalysis.offsetSuggestion
+            ? `Wild-type mismatch at pos ${query.pos} (PDB has ${pdbAnalysis.target.resName}). ${pdbAnalysis.offsetSuggestion.reason}`
+            : `Sequence notice: You entered ${query.mutCode}, but canonical UniProt/AlphaFold residue ${query.pos} is ${pdbAnalysis.target.resName} (${pdbAnalysis.foundWt}).`;
+          setStatus(offsetMsg, 'warning', pdbAnalysis.offsetSuggestion);
+        } else {
+          setStatus(
+            `Opened ${query.label} (${uniprot.accession} · ${af.entryId}) — ${pdbAnalysis.neighbors.length} spatial contacts mapped within 8.0 Å.`,
+            'success'
+          );
+        }
+
+        // Run Gemini AI automatically if key is saved; otherwise render deterministic Offline Biophysical Report
+        if (SafeStorage.get(API_STORAGE_KEY)) {
+          await runGeminiAnalysis(reqId);
+        } else {
+          const localMd = generateLocalReport(STATE.currentData, STATE.audienceMode);
+          STATE.lastMarkdownReport = localMd;
+          STATE.activeModelUsed = 'Offline Biophysical';
+          document.getElementById('reportModeLabel').textContent =
+            `${STATE.audienceMode === 'plain' ? 'Plain English' : 'Lab Researcher'} · Offline Biophysical Engine`;
+          setEngineBadge('Offline Biophysical (No Key)', false);
+          document.getElementById('runGeminiBtnText').textContent = 'Run Gemini AI';
+          document.getElementById('reportContent').innerHTML = renderMarkdown(localMd);
+        }
+      } catch (err) {
+        if (err.name === 'AbortError' || reqId !== STATE.activeRequestId) {
+          return;
+        }
+        loader.classList.add('hidden');
+        setPipelinePill(activeStep, 'error');
+        setStatus(err.message || 'An unexpected error occurred while querying scientific databases.', 'error');
+      } finally {
+        if (reqId === STATE.activeRequestId) {
+          analyzeBtn.disabled = false;
+        }
+      }
+    }
+
+    /*************************************************************************
+     * 17. EXPORT MARKDOWN RESEARCH BRIEF (.MD) INCLUDING Q&A TRANSCRIPT
+     *************************************************************************/
+    function exportBriefMarkdown() {
+      if (!STATE.currentData) return;
+      const { query, uniprot, af, pdbAnalysis, sortedFeatures } = STATE.currentData;
+      const wtInfo = AA_DATA[query.wt];
+      const mutInfo = AA_DATA[query.mut];
+
+      const contactsTable = pdbAnalysis.neighbors.map(n =>
+        `| ${n.one}${n.resi} (${n.resName}) | ${n.dist.toFixed(2)} Å | ${n.isSeqAdj ? 'Seq Adj' : '3D Tertiary'} | ${n.plddt.toFixed(1)} | ${n.clinicalVariants.length} |`
+      ).join('\n');
+
+      const overlappingFeats = sortedFeatures.filter(f => f.overlaps);
+      const annotationsMd = overlappingFeats.length > 0
+        ? overlappingFeats.map(f => `- **${f.type} [${f.start}–${f.end}]:** ${f.description}`).join('\n')
+        : '- No curated UniProt domains or sites directly overlap this coordinate.';
+
+      const clinicalMd = pdbAnalysis.exactClinicalMatches.length
+        ? pdbAnalysis.exactClinicalMatches.map(m => `- **Exact Match (${m.ids.join(', ') || 'UniProt'}):** ${m.description}`).join('\n')
+        : pdbAnalysis.sameSiteOtherVars.length
+        ? pdbAnalysis.sameSiteOtherVars.slice(0, 3).map(v => `- **Same-Site Variant (${v.original || pdbAnalysis.foundWt}${v.pos}${v.variations.length ? v.variations.join('/') : 'del'}):** ${v.description}`).join('\n')
+        : '- No curated UniProt Natural Variant record at this exact coordinate.';
+
+      const qaSection = STATE.qaTranscript.length > 0
+        ? `\n---\n\n## Follow-Up Structural Q&A Transcript\n${STATE.qaTranscript.map((item, idx) =>
+            `### Q${idx + 1}: ${item.question}\n*Engine: ${item.engine}*\n\n${item.answer}`
+          ).join('\n\n')}\n`
+        : '';
+
+      const md = `# FoldShift — Structural Variant Research Brief
+
+- **Target Variant:** ${uniprot.geneSymbol} ${query.mutCode} (${wtInfo.name} -> ${mutInfo.name})
+- **Protein:** ${uniprot.proteinName} (${uniprot.organism})
+- **UniProt Accession:** [${uniprot.accession}](https://www.uniprot.org/uniprotkb/${uniprot.accession}) (${uniprot.seqLength || pdbAnalysis.length} aa)
+- **AlphaFold Structure:** [${af.entryId}](https://alphafold.ebi.ac.uk/entry/${uniprot.accession}) (Residues ${pdbAnalysis.modelStart}–${pdbAnalysis.modelEnd}; Global Mean pLDDT: ${af.globalPlddt ?? 'N/A'})
+- **Local AlphaFold pLDDT (Pos ${query.pos}):** ${pdbAnalysis.plddt.toFixed(1)} / 100
+- **3D Microenvironment:** ${pdbAnalysis.burialClass} (${pdbAnalysis.neighbors.length} residues <= 8.0 Å; ${pdbAnalysis.tertiaryCount} 3D tertiary)
+- **Wild-Type Verification:** ${pdbAnalysis.wtMatches ? `Verified (${pdbAnalysis.foundWt})` : `Mismatch (PDB has ${pdbAnalysis.foundWt})`}
+- **Analysis Engine:** ${STATE.activeModelUsed} (${STATE.audienceMode === 'plain' ? 'Plain English' : 'Lab Researcher'})
+
+---
+
+## Overlapping UniProt Annotations
+${annotationsMd}
+
+---
+
+## UniProt Clinical & 3D Hotspot Summary
+${clinicalMd}
+- **3D Hotspot Cluster:** ${pdbAnalysis.hotspotNeighborsCount} neighboring residue(s) within 8.0 Å carry curated UniProt clinical variants.
+
+---
+
+## 3D Spatial Microenvironment (Cα <= 8.0 Å)
+| Residue | 3D Dist | Contact Type | pLDDT | UniProt Variants |
+| :--- | :--- | :--- | ---: | ---: |
+${contactsTable || '| None | — | — | — | 0 |'}
+
+---
+
+## Structural Impact Report
+${STATE.lastMarkdownReport}
+${qaSection}
+---
+*Generated by FoldShift (AlphaFold DB + UniProt + Google Gemini). Research & educational workbench; not intended for clinical diagnosis.*
+`;
+
+      const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `FoldShift_${uniprot.geneSymbol}_${query.mutCode}_brief.md`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    /*************************************************************************
+     * 18. API MODAL, AUDIENCE TOGGLE & EVENT WIRING
+     *************************************************************************/
+    function openApiModal() {
+      const input = document.getElementById('apiKeyInput');
+      input.type = 'password';
+      input.value = SafeStorage.get(API_STORAGE_KEY) || '';
+      document.getElementById('eyeIcon').innerHTML = ICONS.eyeOpen;
+      document.getElementById('apiModal').classList.remove('hidden');
+      setTimeout(() => input.focus(), 40);
+    }
+
+    function closeApiModal() {
+      document.getElementById('apiModal').classList.add('hidden');
+    }
+
+    function syncApiKeyUI() {
+      const hasKey = Boolean(SafeStorage.get(API_STORAGE_KEY));
+      const dot = document.getElementById('apiStatusDot');
+      const txt = document.getElementById('apiStatusText');
+      dot.className = `w-2 h-2 rounded-full shrink-0 ${hasKey ? 'bg-emerald-600' : 'bg-amber-500'}`;
+      txt.textContent = hasKey ? 'Gemini Connected' : 'Add Gemini Key';
+    }
+
+    function setAudienceMode(mode) {
+      STATE.audienceMode = mode;
+      const rBtn = document.getElementById('audResearcher');
+      const pBtn = document.getElementById('audPlain');
+
+      const activeCls = 'px-2.5 py-1 rounded-[2px] font-medium bg-[#FFFFFF] text-[#990000] border border-[#DCDCD6] transition';
+      const idleCls = 'px-2.5 py-1 rounded-[2px] font-medium text-[#52524E] hover:text-[#1A1A1A] border border-transparent transition';
+
+      rBtn.className = mode === 'researcher' ? activeCls : idleCls;
+      pBtn.className = mode === 'plain' ? activeCls : idleCls;
+
+      if (!STATE.currentData) return;
+      if (SafeStorage.get(API_STORAGE_KEY)) {
+        runGeminiAnalysis(STATE.activeRequestId);
+      } else {
+        const localMd = generateLocalReport(STATE.currentData, mode);
+        STATE.lastMarkdownReport = localMd;
+        document.getElementById('reportModeLabel').textContent =
+          `${mode === 'plain' ? 'Plain English' : 'Lab Researcher'} · Offline Biophysical Engine`;
+        document.getElementById('reportContent').innerHTML = renderMarkdown(localMd);
+      }
+    }
+
+    // Search & Preset Events
+    document.getElementById('queryForm').addEventListener('submit', e => {
+      e.preventDefault();
+      runPipeline(document.getElementById('variantInput').value);
+    });
+
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById('variantInput').value = btn.dataset.val;
+        runPipeline(btn.dataset.val);
+      });
+    });
+
+    document.getElementById('offsetFixBtn').addEventListener('click', e => {
+      const targetQuery = e.currentTarget.dataset.targetQuery;
+      if (targetQuery) {
+        document.getElementById('variantInput').value = targetQuery;
+        runPipeline(targetQuery);
+      }
+    });
+
+    document.getElementById('statusClose').addEventListener('click', hideStatus);
+
+    // 3D Viewer Toolbar Events
+    document.getElementById('colorMode').addEventListener('change', () => renderStructure('none'));
+
+    document.getElementById('focusBtn').addEventListener('click', () => {
+      if (!STATE.currentData || !STATE.viewer || !STATE.viewerReady) return;
+      const { pdbAnalysis } = STATE.currentData;
+      STATE.viewer.zoomTo({
+        resi: [pdbAnalysis.target.pdbResi, ...pdbAnalysis.neighbors.slice(0, 6).map(n => n.pdbResi)]
+      }, 550);
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (STATE.viewer && STATE.viewerReady) STATE.viewer.zoomTo({}, 550);
+    });
+
+    document.getElementById('surfaceBtn').addEventListener('click', () => {
+      STATE.isSurfaceOn = !STATE.isSurfaceOn;
+      const btn = document.getElementById('surfaceBtn');
+      btn.className = STATE.isSurfaceOn
+        ? 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FDF2F2] border border-[#990000] text-[#990000] transition'
+        : 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition';
+      renderStructure('none');
+    });
+
+    document.getElementById('spinBtn').addEventListener('click', () => {
+      STATE.isSpinning = !STATE.isSpinning;
+      const btn = document.getElementById('spinBtn');
+      btn.className = STATE.isSpinning
+        ? 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FDF2F2] border border-[#990000] text-[#990000] transition'
+        : 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition';
+      if (STATE.viewer && STATE.viewerReady) STATE.viewer.spin(STATE.isSpinning ? 'y' : false, 0.38);
+    });
+
+    document.getElementById('bgToggleBtn').addEventListener('click', toggleViewerBackground);
+    document.getElementById('clearMeasureBtn').addEventListener('click', () => clearMeasurement(true));
+    document.getElementById('clearVectorTableBtn').addEventListener('click', () => clearMeasurement(true));
+    document.getElementById('domainActivePill').addEventListener('click', clearActiveDomain);
+    document.getElementById('clearDomainInlineBtn').addEventListener('click', clearActiveDomain);
+    document.getElementById('snapshotBtn').addEventListener('click', takeSnapshotPNG);
+    document.getElementById('exportBtn').addEventListener('click', exportBriefMarkdown);
+    document.getElementById('exportBriefInlineBtn').addEventListener('click', exportBriefMarkdown);
+
+    // Domain Collapse Toggle
+    document.getElementById('domainToggleBtn').addEventListener('click', () => {
+      STATE.showAllDomains = !STATE.showAllDomains;
+      renderSequenceAndDomains();
+    });
+
+    // Audience Toggle & Gemini Trigger
+    document.getElementById('audResearcher').addEventListener('click', () => setAudienceMode('researcher'));
+    document.getElementById('audPlain').addEventListener('click', () => setAudienceMode('plain'));
+    document.getElementById('runGeminiBtn').addEventListener('click', () => runGeminiAnalysis(STATE.activeRequestId));
+
+    // Q&A Workbench Events
+    document.getElementById('chatForm').addEventListener('submit', e => {
+      e.preventDefault();
+      sendChatQuestion(document.getElementById('chatInput').value);
+    });
+    document.querySelectorAll('.chat-chip').forEach(chip => {
+      chip.addEventListener('click', () => sendChatQuestion(chip.dataset.q));
+    });
+
+    // API Key Modal Events
+    document.getElementById('apiKeyBtn').addEventListener('click', openApiModal);
+    document.getElementById('closeModalBtn').addEventListener('click', closeApiModal);
+    document.getElementById('cancelModalBtn').addEventListener('click', closeApiModal);
+    document.getElementById('apiModal').addEventListener('click', e => {
+      if (e.target.id === 'apiModal') closeApiModal();
+    });
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && !document.getElementById('apiModal').classList.contains('hidden')) {
+        closeApiModal();
+      }
+    });
+
+    document.getElementById('toggleKeyVisBtn').addEventListener('click', () => {
+      const input = document.getElementById('apiKeyInput');
+      const eye = document.getElementById('eyeIcon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        eye.innerHTML = ICONS.eyeOff;
+      } else {
+        input.type = 'password';
+        eye.innerHTML = ICONS.eyeOpen;
+      }
+    });
+
+    document.getElementById('saveKeyBtn').addEventListener('click', () => {
+      const val = document.getElementById('apiKeyInput').value.trim();
+      if (val) SafeStorage.set(API_STORAGE_KEY, val);
+      else SafeStorage.remove(API_STORAGE_KEY);
+      syncApiKeyUI();
+      closeApiModal();
+      if (STATE.currentData && val) runGeminiAnalysis(STATE.activeRequestId);
+    });
+
+    document.getElementById('clearKeyBtn').addEventListener('click', () => {
+      SafeStorage.remove(API_STORAGE_KEY);
+      document.getElementById('apiKeyInput').value = '';
+      syncApiKeyUI();
+    });
+
+    // Application Boot
+    window.onload = function () {
+      initViewer();
+      bindTrackInteractions();
+      syncApiKeyUI();
+      runPipeline('TP53 R248W');
+    };
+  </script>
+</body>
+</html>
