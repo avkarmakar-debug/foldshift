@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FoldShift — Open-Access 3D Protein Variant &amp; Structural Impact Workbench</title>
 
-  <!-- Custom Minimalist Line-Art "Inflection Ribbon + Key" SVG Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36' fill='none'%3E%3Crect width='36' height='36' rx='3' fill='%23FFFFFF' stroke='%23DCDCD6' stroke-width='1.5'/%3E%3Cpath d='M5 26C10 26 11.8 18 16.5 18C20.5 18 22 10 26.5 10' stroke='%231A1A1A' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M5 11.5C10 11.5 12 18 16.5 18C19.3 18 21.4 21.5 24.4 21.5H31' stroke='%23990000' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M27.2 21.5V25.2M30.2 21.5V24.2' stroke='%23990000' stroke-width='1.9' stroke-linecap='round'/%3E%3Ccircle cx='16.5' cy='18' r='3.3' fill='%23FFFFFF' stroke='%23990000' stroke-width='2'/%3E%3Ccircle cx='16.5' cy='18' r='1.1' fill='%231A1A1A'/%3E%3C/svg%3E" />
+  <!-- Custom Editorial Line-Art "Inflection Ribbon + Key" SVG Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36' fill='none'%3E%3Crect width='36' height='36' rx='3' fill='%23FFFFFF' stroke='%23DCDCD6' stroke-width='1.5'/%3E%3Cpath d='M5 26C10 26 11.8 18 16.5 18C20.5 18 22 10 26.5 10' stroke='%2318181B' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M5 11.5C10 11.5 12 18 16.5 18C19.3 18 21.4 21.5 24.4 21.5H31' stroke='%23990000' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M27.2 21.5V25.2M30.2 21.5V24.2' stroke='%23990000' stroke-width='1.9' stroke-linecap='round'/%3E%3Ccircle cx='16.5' cy='18' r='3.3' fill='%23FFFFFF' stroke='%23990000' stroke-width='2'/%3E%3Ccircle cx='16.5' cy='18' r='1.1' fill='%2318181B'/%3E%3C/svg%3E" />
 
-  <!-- Google Fonts: Libre Baskerville (Editorial Serif), Inter (UI Sans), JetBrains Mono (Tabular Scientific Mono) -->
+  <!-- Google Fonts: Libre Baskerville, Inter, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
@@ -34,7 +34,7 @@
             crimsonHover: '#7A0000',
             roseTint: '#FDF2F2',
             roseRule: '#E6C2C2',
-            ink: '#1A1A1A',
+            ink: '#18181B',
             inkSecondary: '#52524E',
             inkMuted: '#73736E',
           },
@@ -43,13 +43,14 @@
     };
   </script>
 
-  <!-- 3Dmol.js WebGL Molecular Viewer (includes bundled jQuery) -->
+  <!-- jQuery & 3Dmol.js WebGL Molecular Viewer -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
 
   <style>
     body {
       background-color: #F8F8F6;
-      color: #1A1A1A;
+      color: #18181B;
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
 
@@ -63,7 +64,7 @@
       border-radius: 3px;
     }
 
-    /* Archival thin scrollbars */
+    /* Archival Scrollbars */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -84,7 +85,7 @@
       border-radius: 2px;
     }
 
-    /* 100% Opaque White Sticky Table Header with Hairline Rule */
+    /* 100% Opaque White Sticky Table Header */
     .opaque-thead th {
       position: sticky;
       top: 0;
@@ -99,7 +100,7 @@
       font-family: 'Libre Baskerville', Georgia, serif;
       font-size: 0.88rem;
       font-weight: 700;
-      color: #1A1A1A;
+      color: #18181B;
       margin-top: 1.15rem;
       margin-bottom: 0.5rem;
       padding-bottom: 0.35rem;
@@ -148,7 +149,7 @@
       color: #990000;
     }
     .prose-editorial strong {
-      color: #1A1A1A;
+      color: #18181B;
       font-weight: 600;
     }
     .prose-editorial code {
@@ -156,7 +157,7 @@
       font-size: 0.78rem;
       background-color: #F2F2EE;
       border: 1px solid #DCDCD6;
-      color: #1A1A1A;
+      color: #18181B;
       padding: 0.08rem 0.32rem;
       border-radius: 2px;
     }
@@ -164,32 +165,33 @@
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-[#FDF2F2] selection:text-[#990000] overflow-x-hidden">
 
-  <!-- ==================== 3PX SIGNATURE CRIMSON TOP ACCENT RULE ==================== -->
+  <!-- ==================== 3PX SOLID CRIMSON TOP BAR ==================== -->
   <div class="w-full h-[3px] bg-[#990000] shrink-0"></div>
 
-  <!-- ==================== EDITORIAL ARCHIVAL MASTHEAD ==================== -->
+  <!-- ==================== EDITORIAL MASTHEAD ==================== -->
   <header class="sticky top-0 z-30 bg-[#FFFFFF] border-b border-[#DCDCD6]">
     <div class="max-w-[1440px] mx-auto px-3.5 sm:px-6 py-3 flex items-center justify-between gap-3">
 
-      <!-- Brand Title + Custom Line-Art Inflection Ribbon & Key SVG Emblem -->
+      <!-- Brand Logo + Masthead Title -->
       <div class="flex items-center gap-3 min-w-0">
         <div class="w-10 h-10 rounded-[3px] bg-[#F8F8F6] border border-[#DCDCD6] flex items-center justify-center shrink-0" aria-hidden="true">
+          <!-- Custom Line-Art Inflection Ribbon + Key Emblem -->
           <svg class="w-8 h-8" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 26C10 26 11.8 18 16.5 18C20.5 18 22 10 26.5 10" stroke="#1A1A1A" stroke-width="1.9" stroke-linecap="round" />
+            <path d="M5 26C10 26 11.8 18 16.5 18C20.5 18 22 10 26.5 10" stroke="#18181B" stroke-width="1.9" stroke-linecap="round" />
             <path d="M5 11.5C10 11.5 12 18 16.5 18C19.3 18 21.4 21.5 24.4 21.5H31" stroke="#990000" stroke-width="1.9" stroke-linecap="round" />
             <path d="M27.2 21.5V25.2M30.2 21.5V24.2" stroke="#990000" stroke-width="1.8" stroke-linecap="round" />
             <circle cx="16.5" cy="18" r="3.3" fill="#FFFFFF" stroke="#990000" stroke-width="1.9" />
-            <circle cx="16.5" cy="18" r="1.1" fill="#1A1A1A" />
+            <circle cx="16.5" cy="18" r="1.1" fill="#18181B" />
           </svg>
         </div>
 
         <div class="min-w-0">
           <div class="flex items-baseline gap-2.5 flex-wrap">
-            <h1 class="font-serif text-lg sm:text-xl font-bold tracking-tight text-[#1A1A1A] leading-none">
+            <h1 class="font-serif text-lg sm:text-xl font-bold tracking-tight text-[#18181B] leading-none">
               FoldShift
             </h1>
             <span class="hidden md:inline-block text-[10px] font-mono uppercase tracking-wider text-[#73736E] border border-[#DCDCD6] bg-[#F8F8F6] px-1.5 py-0.5 rounded-[2px]">
-              AlphaFold DB · UniProt · Gemini
+              ALPHAFOLD DB &middot; UNIPROT &middot; GEMINI
             </span>
           </div>
           <p class="font-serif italic text-[11px] sm:text-xs text-[#52524E] truncate mt-1">
@@ -198,11 +200,11 @@
         </div>
       </div>
 
-      <!-- Header Utility Actions -->
+      <!-- Header Right Actions -->
       <div class="flex items-center gap-2 shrink-0">
         <button id="exportBtn" type="button" disabled
-          class="px-3 py-2 text-xs font-medium rounded-[3px] border border-[#DCDCD6] bg-[#FFFFFF] text-[#1A1A1A] hover:bg-[#F2F2EE] hover:border-[#C8C8C0] disabled:opacity-40 disabled:cursor-not-allowed transition inline-flex items-center gap-1.5"
-          title="Download Markdown research brief">
+          class="px-3 py-2 text-xs font-medium rounded-[3px] border border-[#DCDCD6] bg-[#FFFFFF] text-[#18181B] hover:bg-[#F2F2EE] hover:border-[#C8C8C0] disabled:opacity-40 disabled:cursor-not-allowed transition inline-flex items-center gap-1.5"
+          title="Export Markdown research brief">
           <svg class="w-3.5 h-3.5 text-[#990000]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
             <polyline points="7 10 12 15 17 10" />
@@ -212,7 +214,7 @@
         </button>
 
         <button id="apiKeyBtn" type="button"
-          class="px-3 py-2 text-xs font-medium rounded-[3px] border border-[#DCDCD6] bg-[#FFFFFF] text-[#1A1A1A] hover:bg-[#F2F2EE] hover:border-[#990000]/50 transition inline-flex items-center gap-2"
+          class="px-3 py-2 text-xs font-medium rounded-[3px] border border-[#DCDCD6] bg-[#FFFFFF] text-[#18181B] hover:bg-[#F2F2EE] hover:border-[#990000]/50 transition inline-flex items-center gap-2"
           title="Configure Google Gemini API key">
           <span id="apiStatusDot" class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
           <span id="apiStatusText" class="whitespace-nowrap">Add Gemini Key</span>
@@ -224,10 +226,10 @@
   <!-- ==================== MAIN WORKBENCH ==================== -->
   <main class="max-w-[1440px] w-full mx-auto px-3.5 sm:px-6 py-4 sm:py-5 flex-1 space-y-4">
 
-    <!-- ==================== SIGNATURE EDITORIAL SEARCH HERO ==================== -->
+    <!-- ==================== SEARCH HERO CARD ==================== -->
     <section class="archival-card p-4 sm:p-5 space-y-3.5">
       <div class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-1">
-        <h2 class="font-serif text-sm sm:text-base font-bold text-[#1A1A1A]">
+        <h2 class="font-serif text-sm sm:text-base font-bold text-[#18181B]">
           Inspect a Human Missense Variant
         </h2>
         <span class="font-serif italic text-xs text-[#73736E]">
@@ -235,7 +237,7 @@
         </span>
       </div>
 
-      <!-- Direct Search Input + Solid Crimson "Open" Submit Button -->
+      <!-- Search Input + Crimson Open Button -->
       <form id="queryForm" class="flex flex-col sm:flex-row gap-2">
         <div class="relative flex-1">
           <label for="variantInput" class="sr-only">Enter human gene or UniProt accession and missense variant</label>
@@ -243,8 +245,8 @@
             id="variantInput"
             type="text"
             value="TP53 R248W"
-            placeholder="e.g., TP53 R248W, BRAF V600E, or P04637 R248W"
-            class="w-full px-3.5 py-2.5 rounded-[3px] bg-[#FFFFFF] border border-[#C8C8C0] text-sm font-mono text-[#1A1A1A] placeholder-[#73736E] focus:outline-none focus:border-[#990000] focus:ring-1 focus:ring-[#990000] transition"
+            placeholder="e.g., TP53 R248W, BRAF V600E, or P04637 p.R248W"
+            class="w-full px-3.5 py-2.5 rounded-[3px] bg-[#FFFFFF] border border-[#C8C8C0] text-sm font-mono text-[#18181B] placeholder-[#73736E] focus:outline-none focus:border-[#990000] focus:ring-1 focus:ring-[#990000] transition"
             required
           />
         </div>
@@ -261,36 +263,36 @@
         </button>
       </form>
 
-      <!-- Academic Index Preset Links -->
+      <!-- Index Examples Preset Row -->
       <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs border-t border-[#F2F2EE] pt-2.5">
         <span class="font-mono text-[10px] uppercase tracking-wider text-[#73736E]">Index Examples:</span>
-        <button type="button" class="preset-btn font-mono text-[#1A1A1A] hover:text-[#990000] underline decoration-[#C8C8C0] hover:decoration-[#990000] underline-offset-4 transition whitespace-nowrap" data-val="TP53 R248W">
+        <button type="button" class="preset-btn font-mono text-[#18181B] hover:text-[#990000] underline decoration-[#C8C8C0] hover:decoration-[#990000] underline-offset-4 transition whitespace-nowrap" data-val="TP53 R248W">
           TP53 R248W <span class="font-sans text-[#73736E] no-underline">(DNA-binding hotspot)</span>
         </button>
         <span class="text-[#DCDCD6] select-none" aria-hidden="true">|</span>
-        <button type="button" class="preset-btn font-mono text-[#1A1A1A] hover:text-[#990000] underline decoration-[#C8C8C0] hover:decoration-[#990000] underline-offset-4 transition whitespace-nowrap" data-val="BRAF V600E">
+        <button type="button" class="preset-btn font-mono text-[#18181B] hover:text-[#990000] underline decoration-[#C8C8C0] hover:decoration-[#990000] underline-offset-4 transition whitespace-nowrap" data-val="BRAF V600E">
           BRAF V600E <span class="font-sans text-[#73736E] no-underline">(Kinase activation loop)</span>
         </button>
         <span class="text-[#DCDCD6] select-none" aria-hidden="true">|</span>
-        <button type="button" class="preset-btn font-mono text-[#1A1A1A] hover:text-[#990000] underline decoration-[#C8C8C0] hover:decoration-[#990000] underline-offset-4 transition whitespace-nowrap" data-val="BRCA1 C61G">
+        <button type="button" class="preset-btn font-mono text-[#18181B] hover:text-[#990000] underline decoration-[#C8C8C0] hover:decoration-[#990000] underline-offset-4 transition whitespace-nowrap" data-val="BRCA1 C61G">
           BRCA1 C61G <span class="font-sans text-[#73736E] no-underline">(RING Zn-finger)</span>
         </button>
         <span class="text-[#DCDCD6] select-none" aria-hidden="true">|</span>
-        <button type="button" class="preset-btn font-mono text-[#1A1A1A] hover:text-[#990000] underline decoration-[#C8C8C0] hover:decoration-[#990000] underline-offset-4 transition whitespace-nowrap" data-val="EGFR L858R">
+        <button type="button" class="preset-btn font-mono text-[#18181B] hover:text-[#990000] underline decoration-[#C8C8C0] hover:decoration-[#990000] underline-offset-4 transition whitespace-nowrap" data-val="EGFR L858R">
           EGFR L858R <span class="font-sans text-[#73736E] no-underline">(Kinase domain)</span>
         </button>
         <span class="text-[#DCDCD6] select-none" aria-hidden="true">|</span>
-        <button type="button" class="preset-btn font-mono text-[#1A1A1A] hover:text-[#990000] underline decoration-[#C8C8C0] hover:decoration-[#990000] underline-offset-4 transition whitespace-nowrap" data-val="HBB E7V">
+        <button type="button" class="preset-btn font-mono text-[#18181B] hover:text-[#990000] underline decoration-[#C8C8C0] hover:decoration-[#990000] underline-offset-4 transition whitespace-nowrap" data-val="HBB E7V">
           HBB E7V <span class="font-sans text-[#73736E] no-underline">(Sickle cell canonical)</span>
         </button>
       </div>
 
-      <!-- Live 3-Stage Pipeline Status Bar (with optional offset action CTA) -->
+      <!-- Status Bar with 3 Step Pills + Met+1 Offset CTA + Dismiss -->
       <div id="statusBar" class="hidden text-xs px-3 py-2 rounded-[3px] bg-[#F8F8F6] border border-[#DCDCD6] text-[#52524E] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div class="flex items-center gap-2 min-w-0 flex-wrap">
           <span id="statusIcon" class="shrink-0 flex items-center"></span>
           <span id="statusText" class="leading-snug"></span>
-          <button id="offsetFixBtn" type="button" class="hidden px-2 py-0.5 rounded-[2px] bg-[#990000] hover:bg-[#7A0000] text-[#FFFFFF] font-mono text-[11px] font-semibold transition"></button>
+          <button id="offsetFixBtn" type="button" class="hidden px-2.5 py-0.5 rounded-[2px] bg-[#990000] hover:bg-[#7A0000] text-[#FFFFFF] font-mono text-[11px] font-semibold transition"></button>
         </div>
         <div class="flex items-center gap-1.5 shrink-0 font-mono text-[10px] tabular-nums">
           <span id="pipeStep1" class="px-1.5 py-0.5 rounded-[2px] border border-[#DCDCD6] bg-[#FFFFFF] text-[#73736E]">1/3 UniProt</span>
@@ -298,28 +300,28 @@
           <span id="pipeStep2" class="px-1.5 py-0.5 rounded-[2px] border border-[#DCDCD6] bg-[#FFFFFF] text-[#73736E]">2/3 AlphaFold</span>
           <span class="text-[#C8C8C0]">&rarr;</span>
           <span id="pipeStep3" class="px-1.5 py-0.5 rounded-[2px] border border-[#DCDCD6] bg-[#FFFFFF] text-[#73736E]">3/3 3D Math</span>
-          <button id="statusClose" type="button" class="ml-1 p-1 text-[#73736E] hover:text-[#1A1A1A] transition" aria-label="Dismiss status">
+          <button id="statusClose" type="button" class="ml-1 p-1 text-[#73736E] hover:text-[#18181B] transition" aria-label="Dismiss status">
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
           </button>
         </div>
       </div>
     </section>
 
-    <!-- ==================== CORE 2-COLUMN EDITORIAL WORKBENCH ==================== -->
+    <!-- ==================== 2-COLUMN WORKBENCH GRID ==================== -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
 
       <!-- ==================== LEFT COLUMN (7 COLS): 3D VIEWER + 1D TRACK + CONTACTS ==================== -->
       <div class="lg:col-span-7 space-y-4 min-w-0">
 
-        <!-- 3Dmol.js Interactive Publication Structure Card -->
+        <!-- 3Dmol.js Interactive 3D AlphaFold Structure Card -->
         <section class="archival-card p-3.5 sm:p-4 space-y-3">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 pb-2.5 border-b border-[#F2F2EE]">
             <div class="min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
-                <h2 class="font-serif text-sm font-bold text-[#1A1A1A]">3D AlphaFold Structure</h2>
+                <h2 class="font-serif text-sm font-bold text-[#18181B]">3D AlphaFold Structure</h2>
                 <button id="domainActivePill" type="button"
                   class="hidden text-[11px] font-mono px-2 py-0.5 rounded-[2px] bg-[#F5F3FF] text-[#6D28D9] border border-[#DDD6FE] hover:bg-[#EDE9FE] transition inline-flex items-center gap-1"
-                  title="Click to clear highlighted 3D domain">
+                  title="Click to clear 3D domain highlight">
                   <span id="domainActivePillText"></span>
                   <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
                 </button>
@@ -327,11 +329,11 @@
               <p id="viewerSubtitle" class="text-xs text-[#73736E] truncate mt-0.5">Initializing WebGL molecular viewport...</p>
             </div>
 
-            <!-- Precision Viewer Controls -->
+            <!-- Viewer Controls -->
             <div class="flex flex-wrap items-center gap-1.5">
               <label for="colorMode" class="sr-only">Color representation</label>
               <select id="colorMode"
-                class="bg-[#FFFFFF] border border-[#C8C8C0] hover:border-[#990000] text-xs text-[#1A1A1A] rounded-[3px] px-2 py-1.5 focus:outline-none focus:border-[#990000] transition">
+                class="bg-[#FFFFFF] border border-[#C8C8C0] hover:border-[#990000] text-xs text-[#18181B] rounded-[3px] px-2 py-1.5 focus:outline-none focus:border-[#990000] transition">
                 <option value="plddt">Color: AlphaFold pLDDT</option>
                 <option value="ss">Color: Secondary Structure</option>
                 <option value="spectrum">Color: N&#8594;C Spectrum</option>
@@ -345,33 +347,33 @@
               </button>
 
               <button id="resetBtn" type="button"
-                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition"
+                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#18181B] hover:bg-[#F2F2EE] transition"
                 title="Reset full protein view">
                 Reset View
               </button>
 
               <button id="surfaceBtn" type="button"
-                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition"
+                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#18181B] hover:bg-[#F2F2EE] transition"
                 title="Toggle translucent molecular surface">
                 Surface
               </button>
 
               <button id="spinBtn" type="button"
-                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition"
-                title="Toggle continuous rotation">
+                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#18181B] hover:bg-[#F2F2EE] transition"
+                title="Toggle continuous Y-axis spin">
                 Spin
               </button>
 
               <button id="bgToggleBtn" type="button"
-                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition inline-flex items-center gap-1"
+                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#18181B] hover:bg-[#F2F2EE] transition inline-flex items-center gap-1"
                 title="Toggle Publication White / Dark 3D Canvas">
                 <svg id="bgToggleIcon" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg>
                 <span id="bgToggleText">Dark BG</span>
               </button>
 
               <button id="snapshotBtn" type="button"
-                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#1A1A1A] hover:border-[#990000] hover:text-[#990000] transition inline-flex items-center gap-1"
-                title="Download publication PNG snapshot">
+                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#18181B] hover:border-[#990000] hover:text-[#990000] transition inline-flex items-center gap-1"
+                title="Download PNG snapshot">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /><circle cx="12" cy="13" r="3" /></svg>
                 <span class="font-mono">PNG</span>
               </button>
@@ -388,20 +390,20 @@
                 <circle class="opacity-20" cx="12" cy="12" r="10" />
                 <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round" />
               </svg>
-              <p id="viewerLoaderText" class="text-xs font-mono text-[#1A1A1A]">Fetching AlphaFold coordinates...</p>
+              <p id="viewerLoaderText" class="text-xs font-mono text-[#18181B]">Fetching AlphaFold coordinates...</p>
             </div>
 
-            <!-- Active Distance Vector Readout Overlay -->
+            <!-- Active Distance Vector Overlay -->
             <div id="measureBadge" class="hidden absolute top-3 left-3 z-10 px-2.5 py-1.5 rounded-[3px] bg-[#FFFFFF]/95 border border-[#B45309]/50 text-[#92400E] text-xs font-mono tabular-nums flex items-center gap-2 shadow-sm">
               <svg class="w-3.5 h-3.5 text-[#B45309] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z" /><path d="m14.5 12.5 2-2" /><path d="m11.5 9.5 2-2" /><path d="m8.5 6.5 2-2" /><path d="m17.5 15.5 2-2" /></svg>
               <span id="measureBadgeText"></span>
-              <button id="clearMeasureBtn" type="button" class="text-[#73736E] hover:text-[#1A1A1A] transition inline-flex items-center" aria-label="Clear distance measurement" title="Clear vector">
+              <button id="clearMeasureBtn" type="button" class="text-[#73736E] hover:text-[#18181B] transition inline-flex items-center" aria-label="Clear distance measurement" title="Clear vector">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
               </button>
             </div>
           </div>
 
-          <!-- Editorial Figure Legend -->
+          <!-- Legend Bar -->
           <div class="flex flex-wrap items-center justify-between gap-2.5 text-[11px] text-[#52524E] pt-0.5">
             <div class="flex flex-wrap items-center gap-3.5">
               <span class="inline-flex items-center gap-1.5">
@@ -432,12 +434,12 @@
           </div>
         </section>
 
-        <!-- HiDPI Interactive 1D-to-3D Sequence & pLDDT Confidence Track Card -->
+        <!-- Interactive HiDPI 1D pLDDT Sequence & Domain Track Card -->
         <section class="archival-card p-3.5 sm:p-4 space-y-3.5">
           <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#F2F2EE]">
             <div>
-              <h2 class="font-serif text-sm font-bold text-[#1A1A1A]">1D Sequence &amp; Domain Architecture</h2>
-              <p class="text-[11px] text-[#73736E] mt-0.5">Hover or touch track for pLDDT; click or tap any coordinate to zoom in 3D; click annotations to highlight domains.</p>
+              <h2 class="font-serif text-sm font-bold text-[#18181B]">1D Sequence &amp; Domain Architecture</h2>
+              <p class="text-[11px] text-[#73736E] mt-0.5">Hover for pLDDT; click any coordinate to zoom in 3D; click annotations to highlight domains.</p>
             </div>
             <div class="flex items-center gap-2">
               <button id="clearDomainInlineBtn" type="button"
@@ -449,12 +451,12 @@
             </div>
           </div>
 
-          <!-- HiDPI HTML5 Canvas Track + Crimson Mutation Pin + Hover Cursor -->
+          <!-- HiDPI Canvas Track + Crimson Pin -->
           <div class="relative pt-5">
             <div id="mutationPinContainer" class="absolute top-0 left-0 right-0 h-5 pointer-events-none"></div>
             <div id="plddtTrackWrapper" class="relative w-full h-7 rounded-[2px] overflow-hidden border border-[#C8C8C0] bg-[#F2F2EE] cursor-crosshair select-none touch-pan-y">
               <canvas id="plddtTrackCanvas" class="w-full h-full block"></canvas>
-              <div id="trackHoverLine" class="hidden absolute top-0 bottom-0 w-[1px] bg-[#1A1A1A] pointer-events-none"></div>
+              <div id="trackHoverLine" class="hidden absolute top-0 bottom-0 w-[1px] bg-[#18181B] pointer-events-none"></div>
             </div>
             <div class="grid grid-cols-5 text-[10px] font-mono tabular-nums text-[#73736E] mt-1.5">
               <span id="seqStartLabel" class="text-left">1</span>
@@ -465,7 +467,7 @@
             </div>
           </div>
 
-          <!-- Sorted & Collapsible UniProt Domain/Feature Chips (Overlapping First) -->
+          <!-- Sorted & Collapsible UniProt Domain/Feature Chips -->
           <div class="space-y-2.5 pt-0.5">
             <div id="domainPillsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <span class="text-xs text-[#73736E]">Loading UniProt functional annotations...</span>
@@ -485,8 +487,8 @@
         <section class="archival-card p-3.5 sm:p-4 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#F2F2EE]">
             <div>
-              <h2 class="font-serif text-sm font-bold text-[#1A1A1A]">3D Spatial Microenvironment (C&#945; &le; 8.0 &#8491;)</h2>
-              <p class="text-[11px] text-[#73736E] mt-0.5">Click any residue row to toggle a dashed burnished-amber 3D distance vector and zoom to the pair.</p>
+              <h2 class="font-serif text-sm font-bold text-[#18181B]">3D Spatial Microenvironment (C&#945; &le; 8.0 &#8491;)</h2>
+              <p class="text-[11px] text-[#73736E] mt-0.5">Click any residue row to draw a dashed burnished-amber 3D distance cylinder and focus the pair.</p>
             </div>
             <button id="clearVectorTableBtn" type="button"
               class="hidden px-2.5 py-1 rounded-[3px] bg-[#FFFBEB] hover:bg-[#FEF3C7] border border-[#B45309]/40 text-[11px] font-medium text-[#92400E] transition inline-flex items-center gap-1">
@@ -495,7 +497,7 @@
             </button>
           </div>
 
-          <!-- Archival Crimson-Accented 3D Hotspot Cluster Banner -->
+          <!-- Crimson-Accented 3D Hotspot Cluster Banner (SVG Icon, Zero Emojis) -->
           <div id="hotspotBanner" class="hidden rounded-[3px] bg-[#FDF2F2] border border-[#E6C2C2] border-l-[3px] border-l-[#990000] px-3.5 py-2.5 flex items-start gap-2.5">
             <span class="mt-0.5 text-[#990000] shrink-0" aria-hidden="true">
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
@@ -508,10 +510,10 @@
                 <line x1="19" y1="12" x2="22" y2="12" />
               </svg>
             </span>
-            <p id="hotspotBannerText" class="text-xs text-[#1A1A1A] leading-relaxed"></p>
+            <p id="hotspotBannerText" class="text-xs text-[#18181B] leading-relaxed"></p>
           </div>
 
-          <!-- Mobile-Friendly Table with 100% Opaque White Sticky Header -->
+          <!-- Scrollable Contacts Table with 100% Opaque White Sticky Header -->
           <div class="overflow-x-auto overflow-y-auto max-h-64 rounded-[3px] border border-[#DCDCD6] bg-[#FFFFFF]">
             <table class="w-full text-left text-xs border-collapse">
               <thead class="opaque-thead text-[10px] font-mono font-semibold uppercase tracking-wider text-[#52524E]">
@@ -523,7 +525,7 @@
                   <th class="px-3.5 py-2.5 whitespace-nowrap">UniProt Variants</th>
                 </tr>
               </thead>
-              <tbody id="contactsTableBody" class="divide-y divide-[#F2F2EE] font-mono tabular-nums text-[#1A1A1A]">
+              <tbody id="contactsTableBody" class="divide-y divide-[#F2F2EE] font-mono tabular-nums text-[#18181B]">
                 <tr>
                   <td colspan="5" class="px-3.5 py-5 text-center text-[#73736E] font-sans">Awaiting PDB coordinate analysis...</td>
                 </tr>
@@ -537,11 +539,11 @@
       <!-- ==================== RIGHT COLUMN (5 COLS): METRICS + CLINICAL + REPORT + Q&A ==================== -->
       <div class="lg:col-span-5 space-y-4 min-w-0">
 
-        <!-- 4-Card Key Metrics Grid -->
+        <!-- 2x2 Key Metrics Grid -->
         <section class="grid grid-cols-2 gap-3">
           <div class="archival-card p-3.5 min-w-0">
             <div class="text-[10px] font-mono uppercase tracking-wider text-[#73736E]">UniProt Entry</div>
-            <div id="metricUniprot" class="text-sm sm:text-base font-bold font-mono tabular-nums text-[#1A1A1A] mt-1 truncate">&#8212;</div>
+            <div id="metricUniprot" class="text-sm sm:text-base font-bold font-mono tabular-nums text-[#18181B] mt-1 truncate">&#8212;</div>
             <div id="metricProtein" class="text-[11px] text-[#52524E] truncate mt-0.5">Waiting for query</div>
           </div>
 
@@ -559,12 +561,12 @@
 
           <div class="archival-card p-3.5 min-w-0">
             <div class="text-[10px] font-mono uppercase tracking-wider text-[#73736E]">Physicochemical Shift</div>
-            <div id="metricShift" class="text-xs sm:text-sm font-semibold text-[#1A1A1A] mt-1 truncate">&#8212;</div>
+            <div id="metricShift" class="text-xs sm:text-sm font-semibold text-[#18181B] mt-1 truncate">&#8212;</div>
             <div id="metricVerify" class="text-[11px] text-[#52524E] mt-0.5 flex items-center gap-1 truncate">Sequence verification</div>
           </div>
         </section>
 
-        <!-- Curated UniProt Clinical Variant Record Banner -->
+        <!-- UniProt Curated Variant Record Card -->
         <section id="clinicalCard" class="hidden archival-card p-3.5 bg-[#FDF2F2] border-[#E6C2C2] border-l-[3px] border-l-[#990000] space-y-1.5">
           <div class="flex items-center justify-between gap-2">
             <h3 class="font-serif text-xs font-bold text-[#990000] inline-flex items-center gap-1.5">
@@ -573,23 +575,23 @@
             </h3>
             <span id="clinicalIds" class="text-[10px] font-mono tabular-nums text-[#73736E] truncate"></span>
           </div>
-          <p id="clinicalDesc" class="text-xs text-[#1A1A1A] leading-relaxed"></p>
+          <p id="clinicalDesc" class="text-xs text-[#18181B] leading-relaxed"></p>
         </section>
 
-        <!-- Dual-Tier Structural Impact Report Panel -->
+        <!-- Structural Impact Report Card -->
         <section class="archival-card p-4 flex flex-col">
           <div class="flex flex-wrap items-center justify-between gap-2.5 pb-3 border-b border-[#DCDCD6]">
             <div class="min-w-0">
-              <h2 class="font-serif text-sm font-bold text-[#1A1A1A]">Structural Impact Report</h2>
+              <h2 class="font-serif text-sm font-bold text-[#18181B]">Structural Impact Report</h2>
               <p id="reportModeLabel" class="text-[11px] text-[#73736E] mt-0.5">Deterministic Biophysical &amp; Gemini Engine</p>
             </div>
 
-            <!-- Segmented Audience Toggle: Lab Researcher vs Plain English -->
+            <!-- Audience Segmented Toggle -->
             <div class="inline-flex rounded-[3px] bg-[#F2F2EE] p-0.5 border border-[#DCDCD6] text-[11px] shrink-0" role="group" aria-label="Audience mode">
               <button id="audResearcher" type="button" class="px-2.5 py-1 rounded-[2px] font-medium bg-[#FFFFFF] text-[#990000] border border-[#DCDCD6] transition">
                 Lab Researcher
               </button>
-              <button id="audPlain" type="button" class="px-2.5 py-1 rounded-[2px] font-medium text-[#52524E] hover:text-[#1A1A1A] border border-transparent transition">
+              <button id="audPlain" type="button" class="px-2.5 py-1 rounded-[2px] font-medium text-[#52524E] hover:text-[#18181B] border border-transparent transition">
                 Plain English
               </button>
             </div>
@@ -599,7 +601,7 @@
             <p class="text-[#73736E]">Initializing structural variant evaluation...</p>
           </div>
 
-          <!-- Engine Readout & Actions Footer -->
+          <!-- Engine Footer & Regenerate Button -->
           <div class="mt-3.5 pt-3 border-t border-[#DCDCD6] flex flex-wrap items-center justify-between gap-2">
             <span id="modelUsedLabel" class="inline-flex items-center gap-1.5 px-2 py-1 rounded-[2px] bg-[#F8F8F6] border border-[#DCDCD6] text-[10px] font-mono text-[#52524E]">
               <span class="w-1.5 h-1.5 rounded-full bg-[#73736E]" id="engineDot"></span>
@@ -608,27 +610,27 @@
 
             <div class="flex items-center gap-2">
               <button id="exportBriefInlineBtn" type="button" disabled
-                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] border border-[#DCDCD6] bg-[#FFFFFF] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] disabled:opacity-40 transition inline-flex items-center gap-1.5">
+                class="px-2.5 py-1.5 text-xs font-medium rounded-[3px] border border-[#DCDCD6] bg-[#FFFFFF] text-[#52524E] hover:text-[#18181B] hover:bg-[#F2F2EE] disabled:opacity-40 transition inline-flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5 text-[#990000]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
                 <span class="font-mono">.md</span>
               </button>
               <button id="runGeminiBtn" type="button"
                 class="px-3 py-1.5 text-xs font-semibold rounded-[3px] bg-[#990000] hover:bg-[#7A0000] text-[#FFFFFF] transition inline-flex items-center gap-1.5">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2L12 3z" /></svg>
-                <span id="runGeminiBtnText">Run Gemini AI</span>
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /></svg>
+                <span id="runGeminiBtnText">Regenerate</span>
               </button>
             </div>
           </div>
         </section>
 
-        <!-- Follow-Up Q&A Workbench -->
+        <!-- Grounded Structural Q&A Workbench -->
         <section class="archival-card p-4 flex flex-col space-y-3">
           <div class="pb-2 border-b border-[#F2F2EE]">
-            <h2 class="font-serif text-sm font-bold text-[#1A1A1A]">Follow-Up Structural Q&amp;A</h2>
-            <p class="text-[11px] text-[#73736E] mt-0.5">Interrogate binding affinity, mutagenesis controls, or 3D hotspot clusters grounded in live coordinates.</p>
+            <h2 class="font-serif text-sm font-bold text-[#18181B]">Grounded Structural Q&amp;A</h2>
+            <p class="text-[11px] text-[#73736E] mt-0.5">Ask follow-up questions anchored strictly to the loaded AlphaFold coordinates and UniProt annotations.</p>
           </div>
 
-          <!-- 3 Starter Question Chips -->
+          <!-- 3 One-Click Starter Question Chips -->
           <div class="flex flex-wrap gap-1.5">
             <button type="button" class="chat-chip px-2.5 py-1.5 rounded-[3px] bg-[#F8F8F6] hover:bg-[#FDF2F2] border border-[#DCDCD6] hover:border-[#E6C2C2] text-[11px] text-[#52524E] hover:text-[#990000] transition text-left"
               data-q="How does this variant affect binding affinity?">
@@ -639,22 +641,22 @@
               What mutagenesis control should I run?
             </button>
             <button type="button" class="chat-chip px-2.5 py-1.5 rounded-[3px] bg-[#F8F8F6] hover:bg-[#FDF2F2] border border-[#DCDCD6] hover:border-[#E6C2C2] text-[11px] text-[#52524E] hover:text-[#990000] transition text-left"
-              data-q="Explain the 3D hotspot cluster">
+              data-q="Explain the 3D hotspot cluster around this residue.">
               Explain the 3D hotspot cluster
             </button>
           </div>
 
-          <!-- Conversation History -->
+          <!-- Q&A Conversation Thread -->
           <div id="chatThread" class="hidden space-y-2.5 max-h-64 overflow-y-auto pr-1 pt-2 border-t border-[#DCDCD6]"></div>
 
-          <!-- Follow-Up Input Form -->
+          <!-- Q&A Input Form -->
           <form id="chatForm" class="flex gap-2">
             <label for="chatInput" class="sr-only">Ask a structural biology question</label>
             <input
               id="chatInput"
               type="text"
               placeholder="Ask about binding pockets, steric clashes, or controls..."
-              class="flex-1 bg-[#FFFFFF] border border-[#C8C8C0] rounded-[3px] px-3 py-2 text-xs sm:text-sm text-[#1A1A1A] placeholder-[#73736E] focus:outline-none focus:border-[#990000] transition"
+              class="flex-1 bg-[#FFFFFF] border border-[#C8C8C0] rounded-[3px] px-3 py-2 text-xs sm:text-sm text-[#18181B] placeholder-[#73736E] focus:outline-none focus:border-[#990000] transition"
             />
             <button
               id="chatSendBtn"
@@ -676,29 +678,29 @@
       <p class="font-serif italic">
         "Removing barriers in structural biology." &#8212; Powered by live AlphaFold DB, UniProt, 3Dmol.js, and Google Gemini. Research prototype; not for clinical diagnosis.
       </p>
-      <p class="font-mono text-[#52524E] shrink-0">FoldShift · Open-Science Edition</p>
+      <p class="font-mono text-[#52524E] shrink-0">FoldShift &middot; Open-Science Edition</p>
     </div>
   </footer>
 
-  <!-- ==================== GEMINI API KEY CONFIGURATION MODAL ==================== -->
-  <div id="apiModal" class="hidden fixed inset-0 z-50 bg-[#1A1A1A]/55 backdrop-blur-[1px] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="apiModalTitle">
+  <!-- ==================== GEMINI API KEY MODAL ==================== -->
+  <div id="apiModal" class="hidden fixed inset-0 z-50 bg-[#18181B]/55 backdrop-blur-[1px] flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="apiModalTitle">
     <div class="archival-card max-w-md w-full p-5 space-y-4 shadow-xl border-[#C8C8C0]">
       <div class="flex items-center justify-between pb-2.5 border-b border-[#DCDCD6]">
         <div class="flex items-center gap-2">
           <svg class="w-4 h-4 text-[#990000]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5" /><path d="m21 2-9.6 9.6" /><path d="m15.5 7.5 3 3L22 7l-3-3" /></svg>
-          <h3 id="apiModalTitle" class="font-serif text-sm font-bold text-[#1A1A1A]">Configure Google Gemini API Key</h3>
+          <h3 id="apiModalTitle" class="font-serif text-sm font-bold text-[#18181B]">Configure Google Gemini API Key</h3>
         </div>
-        <button id="closeModalBtn" type="button" class="p-1 text-[#73736E] hover:text-[#1A1A1A] transition" aria-label="Close modal">
+        <button id="closeModalBtn" type="button" class="p-1 text-[#73736E] hover:text-[#18181B] transition" aria-label="Close modal">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
         </button>
       </div>
 
       <p class="text-xs text-[#52524E] leading-relaxed">
-        Stored locally in your browser (<code class="font-mono text-[#1A1A1A] bg-[#F2F2EE] px-1 py-0.5 rounded-[2px]">foldshift_gemini_key</code>) with an in-memory fallback and sent directly to Google's Gemini REST API with automatic fallback across
-        <code class="font-mono text-[#990000] bg-[#FDF2F2] px-1 py-0.5 rounded-[2px]">gemini-2.5-flash</code>,
-        <code class="font-mono text-[#1A1A1A] bg-[#F2F2EE] px-1 py-0.5 rounded-[2px]">gemini-2.5-flash-lite</code>, and
-        <code class="font-mono text-[#1A1A1A] bg-[#F2F2EE] px-1 py-0.5 rounded-[2px]">gemini-2.0-flash</code>.
-        Obtain a free key at
+        Stored locally in your browser (<code class="font-mono text-[#18181B] bg-[#F2F2EE] px-1 py-0.5 rounded-[2px]">foldshift_gemini_key</code>) with an in-memory fallback and sent directly to Google's Generative Language REST API with automatic fallback across
+        <code class="font-mono text-[#990000] bg-[#FDF2F2] px-1 py-0.5 rounded-[2px]">gemini-3.8-flash</code>,
+        <code class="font-mono text-[#18181B] bg-[#F2F2EE] px-1 py-0.5 rounded-[2px]">gemini-3.5-flash-lite</code>, and
+        <code class="font-mono text-[#18181B] bg-[#F2F2EE] px-1 py-0.5 rounded-[2px]">gemini-3.6-flash</code>.
+        Get a free key at
         <a href="https://aistudio.google.com/" target="_blank" rel="noopener noreferrer" class="text-[#990000] underline underline-offset-2 hover:text-[#7A0000]">aistudio.google.com</a>.
       </p>
 
@@ -710,10 +712,10 @@
             type="password"
             placeholder="AIzaSy..."
             autocomplete="off"
-            class="w-full bg-[#FFFFFF] border border-[#C8C8C0] rounded-[3px] pl-3 pr-10 py-2 text-sm font-mono text-[#1A1A1A] placeholder-[#73736E] focus:outline-none focus:border-[#990000] transition"
+            class="w-full bg-[#FFFFFF] border border-[#C8C8C0] rounded-[3px] pl-3 pr-10 py-2 text-sm font-mono text-[#18181B] placeholder-[#73736E] focus:outline-none focus:border-[#990000] transition"
           />
           <button id="toggleKeyVisBtn" type="button"
-            class="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[#73736E] hover:text-[#1A1A1A] transition"
+            class="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-[#73736E] hover:text-[#18181B] transition"
             aria-label="Toggle API key visibility"
             title="Show/Hide key">
             <svg id="eyeIcon" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
@@ -725,10 +727,10 @@
       </div>
 
       <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#F2F2EE]">
-        <button id="clearKeyBtn" type="button" class="px-3 py-1.5 text-xs font-medium rounded-[3px] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition">
+        <button id="clearKeyBtn" type="button" class="px-3 py-1.5 text-xs font-medium rounded-[3px] border border-[#DCDCD6] text-[#52524E] hover:text-[#18181B] hover:bg-[#F2F2EE] transition">
           Clear
         </button>
-        <button id="cancelModalBtn" type="button" class="px-3 py-1.5 text-xs font-medium rounded-[3px] bg-[#F2F2EE] text-[#1A1A1A] hover:bg-[#DCDCD6] transition">
+        <button id="cancelModalBtn" type="button" class="px-3 py-1.5 text-xs font-medium rounded-[3px] bg-[#F2F2EE] text-[#18181B] hover:bg-[#DCDCD6] transition">
           Cancel
         </button>
         <button id="saveKeyBtn" type="button" class="px-4 py-1.5 text-xs font-semibold rounded-[3px] bg-[#990000] hover:bg-[#7A0000] text-[#FFFFFF] transition">
@@ -741,8 +743,9 @@
   <!-- ==================== APPLICATION LOGIC ==================== -->
   <script>
     /*************************************************************************
-     * 1. CRASH-PROOF STORAGE WRAPPER (LOCALSTORAGE + IN-MEMORY FALLBACK)
+     * 1. ACTIVE GEMINI MODEL FALLBACK CONFIGURATION & SAFE STORAGE
      *************************************************************************/
+    const GEMINI_MODELS = ['gemini-3.8-flash', 'gemini-3.5-flash-lite', 'gemini-3.6-flash'];
     const API_STORAGE_KEY = 'foldshift_gemini_key';
 
     const SafeStorage = (() => {
@@ -753,7 +756,7 @@
             const val = window.localStorage.getItem(key);
             if (val !== null) return val;
           } catch (_) {
-            // Sandboxed iframe or strict privacy mode: fall through to memory
+            // Sandboxed iframe or restricted storage: fall through to memory
           }
           return Object.prototype.hasOwnProperty.call(memoryFallback, key)
             ? memoryFallback[key]
@@ -763,9 +766,7 @@
           memoryFallback[key] = String(val);
           try {
             window.localStorage.setItem(key, String(val));
-          } catch (_) {
-            // Retained safely in memoryFallback for current session
-          }
+          } catch (_) {}
         },
         remove(key) {
           delete memoryFallback[key];
@@ -776,8 +777,16 @@
       };
     })();
 
+    function formatModelDisplayName(modelId) {
+      if (!modelId) return 'Gemini';
+      return modelId
+        .split('-')
+        .map(part => (/^\d/.test(part) ? part : part.charAt(0).toUpperCase() + part.slice(1)))
+        .join(' ');
+    }
+
     /*************************************************************************
-     * 2. BIOCHEMICAL AMINO ACID REFERENCE TABLE & PLDDT COLOR HELPER
+     * 2. BIOCHEMICAL AMINO ACID TABLE & OFFICIAL ALPHAFOLD PLDDT RAMP
      *************************************************************************/
     const AA_DATA = {
       A: { three: 'ALA', name: 'Alanine',       charge: 0,   hydro: 'Nonpolar hydrophobic',  size: 'small',      mw: 89.1  },
@@ -803,7 +812,6 @@
     };
     const THREE_TO_ONE = Object.fromEntries(Object.entries(AA_DATA).map(([k, v]) => [v.three, k]));
 
-    // Official AlphaFold pLDDT color ramp
     function getPlddtHex(score) {
       if (score > 90) return '#0053D6';
       if (score >= 70) return '#65CBF3';
@@ -819,7 +827,7 @@
     }
 
     /*************************************************************************
-     * 3. CRISP EDITORIAL INLINE SVG ICONS (ZERO EMOJIS)
+     * 3. CRISP THIN-STROKE INLINE SVG ICONS (ZERO EMOJIS)
      *************************************************************************/
     const ICONS = {
       spinner: '<svg class="w-3.5 h-3.5 text-[#990000] animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle class="opacity-20" cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/></svg>',
@@ -834,34 +842,34 @@
     };
 
     /*************************************************************************
-     * 4. GLOBAL WORKBENCH STATE & RACE-CONDITION GUARDS
+     * 4. GLOBAL STATE & RACE-CONDITION GUARDS
      *************************************************************************/
     const STATE = {
       viewer: null,
       viewerReady: false,
-      activeRequestId: 0,           // Monotonically increasing pipeline guard
+      activeRequestId: 0,
       pipelineAbortController: null,
-      geminiRequestId: 0,           // Monotonically increasing Gemini report guard
+      geminiRequestId: 0,
       geminiAbortController: null,
       chatAbortController: null,
-      currentData: null,            // { query, uniprot, af, pdbAnalysis, sortedFeatures }
-      isDarkCanvas: false,          // Default: Publication White (#FFFFFF); Toggle: Dark (#111317)
+      currentData: null,
+      isDarkCanvas: false,
       isSurfaceOn: false,
       isSpinning: false,
       activeDomain: null,
       showAllDomains: false,
-      activeMeasureResi: null,      // UniProt residue number of drawn 3D distance vector
+      activeMeasureResi: null,
       measureShape: null,
       measureLabel: null,
-      audienceMode: 'researcher',   // 'researcher' | 'plain'
+      audienceMode: 'researcher',
       lastMarkdownReport: '',
       activeModelUsed: 'Offline Biophysical',
-      chatHistory: [],              // Gemini API conversation array
-      qaTranscript: []              // Clean { question, answer, engine } array for .md export
+      chatHistory: [],
+      qaTranscript: []
     };
 
     /*************************************************************************
-     * 5. SAFE ESCAPING, STATUS BANNERS & XSS-SAFE MARKDOWN RENDERER
+     * 5. HTML ESCAPING, STATUS BAR & SAFE MARKDOWN RENDERER
      *************************************************************************/
     function escapeHtml(str) {
       return String(str == null ? '' : str)
@@ -917,7 +925,7 @@
       textEl.textContent = msg;
 
       if (offsetFix && offsetFix.queryStr) {
-        offsetBtn.textContent = `Open ${offsetFix.queryStr}`;
+        offsetBtn.textContent = `Switch to ${offsetFix.queryStr}`;
         offsetBtn.dataset.targetQuery = offsetFix.queryStr;
         offsetBtn.classList.remove('hidden');
       } else {
@@ -936,9 +944,6 @@
       dot.className = `w-1.5 h-1.5 rounded-full ${isAi ? 'bg-emerald-600' : 'bg-[#73736E]'}`;
     }
 
-    /**
-     * XSS-safe Markdown renderer: escapes all HTML entities before applying formatting.
-     */
     function renderMarkdown(md) {
       if (!md) return '';
       const esc = escapeHtml(md);
@@ -995,7 +1000,7 @@
       const cleaned = String(raw || '').trim().replace(/\s+/g, ' ');
       const parts = cleaned.split(/[\s:_-]+/).filter(Boolean);
       if (parts.length < 2) {
-        throw new Error('Enter a human gene symbol or UniProt accession plus missense variant (e.g., TP53 R248W or P04637 R248W).');
+        throw new Error('Enter a human gene symbol or UniProt accession plus missense variant (e.g., TP53 R248W or P04637 p.R248W).');
       }
       const identifier = parts[0].toUpperCase();
       const mutToken = parts[1].replace(/^p\./i, '').toUpperCase();
@@ -1021,7 +1026,7 @@
     }
 
     /*************************************************************************
-     * 7. RESILIENT UNIPROT REST API PIPELINE
+     * 7. UNIPROT REST API (DIRECT ACCESSION + GENE_EXACT -> GENE FALLBACK)
      *************************************************************************/
     async function fetchUniProt(query, signal) {
       let entry = null;
@@ -1037,13 +1042,11 @@
           throw new Error(`Invalid UniProt response for accession "${query.rawId}".`);
         }
       } else {
-        // Primary query: exact human reviewed gene symbol
         const exactUrl = `https://rest.uniprot.org/uniprotkb/search?query=gene_exact:${encodeURIComponent(query.rawId)}+AND+organism_id:9606+AND+reviewed:true&format=json&size=1`;
         let res = await fetch(exactUrl, { signal });
         if (!res.ok) throw new Error(`UniProt REST API returned HTTP ${res.status}.`);
         let data = await res.json();
 
-        // Fallback query: broader reviewed human gene synonym search
         if (!data.results || data.results.length === 0) {
           const fallbackUrl = `https://rest.uniprot.org/uniprotkb/search?query=gene:${encodeURIComponent(query.rawId)}+AND+organism_id:9606+AND+reviewed:true&format=json&size=1`;
           res = await fetch(fallbackUrl, { signal });
@@ -1094,7 +1097,8 @@
 
         if (STRUCTURAL_TYPES.has(f.type)) {
           const ligandName = f.ligand?.name ? ` (${f.ligand.name})` : '';
-          const desc = (f.description || f.ligand?.name || f.type) + (f.description && ligandName && !f.description.includes(f.ligand.name) ? ligandName : '');
+          const desc = (f.description || f.ligand?.name || f.type) +
+            (f.description && ligandName && !f.description.includes(f.ligand.name) ? ligandName : '');
           features.push({
             type: f.type,
             description: desc,
@@ -1102,7 +1106,6 @@
             end: typeof end === 'number' ? end : start
           });
         } else if (f.type === 'Natural variant') {
-          // Safely parse alternativeSequence (handle deletions/missing objects cleanly)
           const altSeq = f.alternativeSequence || {};
           const orig = typeof altSeq.originalSequence === 'string' ? altSeq.originalSequence : '';
           const alts = Array.isArray(altSeq.alternativeSequences)
@@ -1152,7 +1155,7 @@
     }
 
     /*************************************************************************
-     * 8. RESILIENT ALPHAFOLD DB API (DYNAMIC URL + MULTI-FRAGMENT SELECTION)
+     * 8. ALPHAFOLD DB API (MULTI-FRAGMENT SUPPORT)
      *************************************************************************/
     async function fetchAlphaFold(accession, targetPos, signal) {
       const metaRes = await fetch(
@@ -1169,7 +1172,6 @@
         throw new Error(`AlphaFold prediction record for ${accession} does not include a downloadable PDB URL.`);
       }
 
-      // Select the fragment covering targetPos for multi-fragment long proteins, else fall back to entry 0
       let selected = fragments.find(
         m => typeof m.uniprotStart === 'number' &&
              typeof m.uniprotEnd === 'number' &&
@@ -1198,7 +1200,7 @@
     }
 
     /*************************************************************************
-     * 9. HARDENED IN-BROWSER PDB PARSER & 8.0 Å EUCLIDEAN CONTACT ENGINE
+     * 9. IN-BROWSER PDB PARSER & 8.0 Å EUCLIDEAN CONTACT ENGINE
      *************************************************************************/
     function analyzePdbSite(pdbText, afMeta, targetPos, expectedWt, expectedMut, geneSymbol, naturalVariants) {
       const rawAtoms = [];
@@ -1209,7 +1211,6 @@
         const line = lines[i];
         if (!line.startsWith('ATOM  ')) continue;
 
-        // Strictly Cα atoms and ignore alternate conformations other than ' ' or 'A'
         const atomName = line.slice(12, 16).trim();
         if (atomName !== 'CA') continue;
         const altLoc = line.length > 16 ? line.charAt(16) : ' ';
@@ -1223,7 +1224,7 @@
         const plddt = parseFloat(line.slice(60, 66).trim());
 
         if (Number.isNaN(pdbResi) || Number.isNaN(x) || Number.isNaN(y) || Number.isNaN(z)) continue;
-        if (seenPdbResi.has(pdbResi)) continue; // Zero duplicate residue entries
+        if (seenPdbResi.has(pdbResi)) continue;
         seenPdbResi.add(pdbResi);
 
         rawAtoms.push({
@@ -1239,8 +1240,6 @@
         throw new Error('AlphaFold PDB file did not contain readable Cα atomic coordinates.');
       }
 
-      // Map PDB numbering to UniProt canonical numbering for multi-fragment structures
-      const minPdbResi = rawAtoms[0].pdbResi;
       const maxPdbResi = rawAtoms[rawAtoms.length - 1].pdbResi;
       const needsFragmentOffset = afMeta.uniprotStart > 1 && maxPdbResi < afMeta.uniprotStart;
       const offsetDelta = needsFragmentOffset ? (afMeta.uniprotStart - 1) : 0;
@@ -1264,7 +1263,6 @@
         );
       }
 
-      // Index curated UniProt Natural Variants by canonical position
       const varByPos = new Map();
       for (const nv of naturalVariants) {
         if (!varByPos.has(nv.pos)) varByPos.set(nv.pos, []);
@@ -1275,7 +1273,7 @@
       const exactClinicalMatches = posVars.filter(v => v.variations.includes(expectedMut));
       const sameSiteOtherVars = posVars.filter(v => !v.variations.includes(expectedMut));
 
-      // Detect likely initiator-Methionine (+1) numbering offset on wild-type mismatch
+      // Automatic initiator-Methionine (+1) offset detection (e.g., HBB E6V -> HBB E7V)
       const wtMatches = target.one === expectedWt;
       let offsetSuggestion = null;
       if (!wtMatches) {
@@ -1286,7 +1284,7 @@
             delta: +1,
             suggestedPos: targetPos + 1,
             queryStr: `${geneSymbol} ${expectedWt}${targetPos + 1}${expectedMut}`,
-            reason: `Likely initiator-Methionine (+1) numbering offset (classic mature-protein numbering vs. canonical UniProt sequence: residue ${targetPos + 1} is ${plusOneAtom.resName}).`
+            reason: `Likely initiator-Methionine (+1) numbering offset (PDB has ${plusOneAtom.resName} at canonical position ${targetPos + 1}).`
           };
         } else if (minusOneAtom && minusOneAtom.one === expectedWt) {
           offsetSuggestion = {
@@ -1298,7 +1296,6 @@
         }
       }
 
-      // Exact Euclidean Cα distances <= 8.0 Å
       const neighbors = [];
       let hotspotNeighborsCount = 0;
 
@@ -1345,7 +1342,7 @@
     }
 
     /*************************************************************************
-     * 10. ROCK-SOLID 3DMOL.JS WEBGL VIEWER
+     * 10. 3DMOL.JS WEBGL VIEWER
      *************************************************************************/
     function initViewer() {
       const container = document.getElementById('viewer-container');
@@ -1354,7 +1351,7 @@
         container.innerHTML = `
           <div class="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-[#F8F8F6] text-[#52524E]">
             <p class="font-serif text-sm font-bold text-[#990000]">3Dmol.js Library Unavailable</p>
-            <p class="text-xs mt-1 max-w-sm">Could not load 3Dmol.js from CDN. Check network access; all UniProt, PDB coordinate math, and Gemini features remain active.</p>
+            <p class="text-xs mt-1 max-w-sm">Could not load 3Dmol.js from CDN. All UniProt, PDB coordinate math, and Gemini features remain active.</p>
           </div>`;
         setStatus('3Dmol.js failed to load from CDN. Data analysis will still run.', 'warning');
         return;
@@ -1409,20 +1406,22 @@
       if (STATE.isDarkCanvas) {
         loader.classList.remove('bg-[#FFFFFF]/90');
         loader.classList.add('bg-[#111317]/90');
-        loaderTxt.classList.replace('text-[#1A1A1A]', 'text-[#F8F8F6]');
-        btn.className = 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#1A1A1A] border border-[#1A1A1A] text-[#FFFFFF] hover:bg-[#363633] transition inline-flex items-center gap-1';
+        loaderTxt.classList.replace('text-[#18181B]', 'text-[#F8F8F6]');
+        btn.className = 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#18181B] border border-[#18181B] text-[#FFFFFF] hover:bg-[#363633] transition inline-flex items-center gap-1';
         icon.innerHTML = ICONS.sun;
         txt.textContent = 'White BG';
       } else {
         loader.classList.remove('bg-[#111317]/90');
         loader.classList.add('bg-[#FFFFFF]/90');
-        loaderTxt.classList.replace('text-[#F8F8F6]', 'text-[#1A1A1A]');
-        btn.className = 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition inline-flex items-center gap-1';
+        loaderTxt.classList.replace('text-[#F8F8F6]', 'text-[#18181B]');
+        btn.className = 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#18181B] hover:bg-[#F2F2EE] transition inline-flex items-center gap-1';
         icon.innerHTML = ICONS.moon;
         txt.textContent = 'Dark BG';
       }
 
       if (STATE.viewer && STATE.viewerReady) {
+        let savedView = null;
+        try { savedView = STATE.viewer.getView(); } catch (_) {}
         STATE.viewer.setBackgroundColor(bgHex);
         if (STATE.isSurfaceOn) {
           STATE.viewer.removeAllSurfaces();
@@ -1430,6 +1429,9 @@
             opacity: STATE.isDarkCanvas ? 0.24 : 0.16,
             color: STATE.isDarkCanvas ? '#A1A1AA' : '#94A3B8'
           });
+        }
+        if (savedView) {
+          try { STATE.viewer.setView(savedView); } catch (_) {}
         }
         STATE.viewer.render();
       }
@@ -1467,7 +1469,6 @@
       const t = pdbAnalysis.target;
       const v = STATE.viewer;
 
-      // Dashed Burnished-Amber (#B45309) 3D distance cylinder
       STATE.measureShape = v.addCylinder({
         start: { x: t.x, y: t.y, z: t.z },
         end: { x: neighbor.x, y: neighbor.y, z: neighbor.z },
@@ -1478,14 +1479,13 @@
         gapLength: 0.22
       });
 
-      // Exact midpoint Ångström label
       STATE.measureLabel = v.addLabel(`${neighbor.dist.toFixed(2)} Å`, {
         position: {
           x: (t.x + neighbor.x) / 2,
           y: (t.y + neighbor.y) / 2,
           z: (t.z + neighbor.z) / 2
         },
-        backgroundColor: '#1A1A1A',
+        backgroundColor: '#18181B',
         fontColor: '#FDE68A',
         borderColor: '#B45309',
         borderThickness: 1,
@@ -1518,7 +1518,6 @@
       const preservedMeasure = STATE.activeMeasureResi;
       const v = STATE.viewer;
 
-      // Preserve current camera view matrix when only styling/surface/colorMode changed
       let savedView = null;
       if (zoomTarget === 'none') {
         try { savedView = v.getView(); } catch (_) { savedView = null; }
@@ -1544,7 +1543,7 @@
         v.setStyle({}, { cartoon: { color: 'spectrum', thickness: 0.35 } });
       }
 
-      // 2. Highlight active 1D-selected UniProt domain in Academic Violet (#6D28D9)
+      // 2. Active 1D-Selected UniProt Domain in Violet (#6D28D9)
       if (STATE.activeDomain) {
         const sPdb = Math.max(1, toPdbResi(STATE.activeDomain.start));
         const ePdb = Math.max(1, toPdbResi(STATE.activeDomain.end));
@@ -1554,19 +1553,19 @@
         v.addStyle(sel, { cartoon: { color: '#6D28D9', thickness: 0.52 } });
       }
 
-      // 3. Highlight 8.0 Å spatial neighbors in Deep Teal (#0F766E) sticks
+      // 3. 8.0 Å Neighbors in Deep Teal (#0F766E) Sticks
       const neighborPdbResis = pdbAnalysis.neighbors.map(n => n.pdbResi);
       if (neighborPdbResis.length > 0) {
         v.addStyle({ resi: neighborPdbResis }, { stick: { color: '#0F766E', radius: 0.14 } });
       }
 
-      // 4. Highlight mutated residue in Crimson (#C81E1E) sticks + translucent sphere
+      // 4. Mutated Residue in Crimson (#C81E1E) Sticks + Sphere
       v.addStyle({ resi: pdbAnalysis.target.pdbResi }, {
         stick: { color: '#C81E1E', radius: 0.30 },
         sphere: { color: '#C81E1E', opacity: 0.28, radius: 1.55 }
       });
 
-      // 5. Coordinate-Anchored Label at exact { x, y, z } of mutated Cα
+      // 5. Coordinate-Anchored 3D Label at exact { x, y, z }
       v.addLabel(query.mutCode, {
         position: {
           x: pdbAnalysis.target.x,
@@ -1583,7 +1582,7 @@
         backgroundOpacity: 0.94
       });
 
-      // 6. Preserve Optional Translucent VDW Surface (contrasting opacity for White vs Dark BG)
+      // 6. Optional Translucent VDW Surface
       v.removeAllSurfaces();
       if (STATE.isSurfaceOn) {
         v.addSurface(window.$3Dmol.SurfaceType.VDW, {
@@ -1592,12 +1591,12 @@
         });
       }
 
-      // 7. Re-apply active measurement vector if present
+      // 7. Re-apply Active Distance Vector
       if (preservedMeasure !== null) {
         drawMeasurementOnViewer(preservedMeasure, false);
       }
 
-      // 8. Camera Framing / Preservation
+      // 8. Camera Preservation or Framing
       if (zoomTarget === 'none' && savedView) {
         try { v.setView(savedView); } catch (_) {}
       } else if (zoomTarget === 'domain' && STATE.activeDomain) {
@@ -1633,7 +1632,7 @@
     }
 
     /*************************************************************************
-     * 11. HiDPI INTERACTIVE 1D-TO-3D pLDDT TRACK + CLICK/TAP ZOOM + CHIPS
+     * 11. HiDPI INTERACTIVE 1D-TO-3D pLDDT TRACK & DOMAIN PILLS
      *************************************************************************/
     function getTrackBounds() {
       if (!STATE.currentData) return { start: 1, end: 1, span: 1 };
@@ -1663,7 +1662,6 @@
       ctx.fillStyle = '#F2F2EE';
       ctx.fillRect(0, 0, W, H);
 
-      // Per-residue AlphaFold pLDDT color bars
       const stepW = W / span;
       for (const atom of pdbAnalysis.caAtoms) {
         ctx.fillStyle = getPlddtHex(atom.plddt);
@@ -1671,7 +1669,6 @@
         ctx.fillRect(x, 0, Math.max(1.2, stepW + 0.4), H);
       }
 
-      // Highlight selected domain overlay in Academic Violet (#6D28D9)
       if (STATE.activeDomain) {
         const x1 = ((STATE.activeDomain.start - start) / span) * W;
         const x2 = ((STATE.activeDomain.end - start + 1) / span) * W;
@@ -1682,7 +1679,6 @@
         ctx.strokeRect(x1 + 0.5, 0.5, Math.max(2, x2 - x1 - 1), H - 1);
       }
 
-      // Crisp Crimson (#990000) vertical pin at mutation coordinate
       const mutX = ((query.pos - start + 0.5) / span) * W;
       ctx.fillStyle = '#FFFFFF';
       ctx.fillRect(Math.max(0, mutX - 2.2), 0, 4.4, H);
@@ -1696,7 +1692,6 @@
       const hoverLine = document.getElementById('trackHoverLine');
       const readout = document.getElementById('trackHoverReadout');
 
-      // ResizeObserver keeps HiDPI canvas sharp across mobile/desktop resizes
       if (typeof ResizeObserver !== 'undefined') {
         const ro = new ResizeObserver(() => {
           if (STATE.currentData) drawPlddtTrackCanvas();
@@ -1794,7 +1789,6 @@
 
       drawPlddtTrackCanvas();
 
-      // Crimson Mutation Pin Badge above the 1D Track
       const mutPct = Math.min(95, Math.max(5, ((query.pos - start + 0.5) / span) * 100));
       document.getElementById('mutationPinContainer').innerHTML = `
         <div style="left: ${mutPct.toFixed(2)}%;" class="absolute -translate-x-1/2 flex flex-col items-center">
@@ -1803,7 +1797,6 @@
           </span>
         </div>`;
 
-      // Active Domain Clear Controls
       const clearInlineBtn = document.getElementById('clearDomainInlineBtn');
       const headerDomainPill = document.getElementById('domainActivePill');
       if (STATE.activeDomain) {
@@ -1818,7 +1811,6 @@
         headerDomainPill.classList.add('hidden');
       }
 
-      // Sorted & Collapsible UniProt Domain/Feature Chips (First 4 by default)
       const pillsEl = document.getElementById('domainPillsContainer');
       const toggleWrap = document.getElementById('domainToggleWrap');
       const toggleText = document.getElementById('domainToggleText');
@@ -1846,9 +1838,9 @@
 
         let cardCls = 'bg-[#F8F8F6] border-[#DCDCD6] hover:border-[#990000]/50 hover:bg-[#FFFFFF] text-[#52524E]';
         if (isActive) {
-          cardCls = 'bg-[#F5F3FF] border-[#6D28D9] text-[#1A1A1A] ring-1 ring-[#6D28D9]/25';
+          cardCls = 'bg-[#F5F3FF] border-[#6D28D9] text-[#18181B] ring-1 ring-[#6D28D9]/25';
         } else if (f.overlaps) {
-          cardCls = 'bg-[#FFFFFF] border-[#E6C2C2] hover:border-[#990000] text-[#1A1A1A]';
+          cardCls = 'bg-[#FFFFFF] border-[#E6C2C2] hover:border-[#990000] text-[#18181B]';
         }
 
         const overlapBadge = f.overlaps
@@ -1865,7 +1857,7 @@
               </div>
               ${overlapBadge}
             </div>
-            <span class="text-xs font-medium text-[#1A1A1A] truncate w-full">${escapeHtml(f.description)}</span>
+            <span class="text-xs font-medium text-[#18181B] truncate w-full">${escapeHtml(f.description)}</span>
           </button>`;
       }).join('');
 
@@ -1908,7 +1900,7 @@
     }
 
     /*************************************************************************
-     * 12. 3D SPATIAL MICROENVIRONMENT TABLE & CLINICAL RECORD BANNER
+     * 12. 3D SPATIAL MICROENVIRONMENT TABLE & CLINICAL RECORD CARD
      *************************************************************************/
     function renderContactsTable(pdbAnalysis) {
       const tbody = document.getElementById('contactsTableBody');
@@ -1917,7 +1909,7 @@
 
       if (pdbAnalysis.hotspotNeighborsCount > 0) {
         hotspotText.innerHTML =
-          `<strong class="font-semibold text-[#990000]">3D Hotspot Cluster:</strong> <span class="font-mono tabular-nums font-semibold text-[#1A1A1A]">${pdbAnalysis.hotspotNeighborsCount}</span> neighboring residue(s) within 8.0 &#8491; carry curated UniProt clinical variants.`;
+          `<strong class="font-semibold text-[#990000]">3D Hotspot Cluster:</strong> <span class="font-mono tabular-nums font-semibold text-[#18181B]">${pdbAnalysis.hotspotNeighborsCount}</span> neighboring residue(s) within 8.0 &#8491; carry curated UniProt clinical variants.`;
         hotspotBanner.classList.remove('hidden');
       } else {
         hotspotBanner.classList.add('hidden');
@@ -1948,7 +1940,7 @@
         return `
           <tr class="contact-row hover:bg-[#F8F8F6] cursor-pointer transition" data-resi="${n.resi}">
             <td class="px-3.5 py-2.5 whitespace-nowrap">
-              <span class="font-semibold text-[#1A1A1A]">${escapeHtml(n.one)}${n.resi}</span>
+              <span class="font-semibold text-[#18181B]">${escapeHtml(n.one)}${n.resi}</span>
               <span class="text-[#73736E] ml-1 text-[11px]">${escapeHtml(n.resName)}</span>
             </td>
             <td class="px-3.5 py-2.5 whitespace-nowrap text-[#B45309] font-semibold">${n.dist.toFixed(2)} &#8491;</td>
@@ -1978,7 +1970,7 @@
       if (pdbAnalysis.exactClinicalMatches.length > 0) {
         const m = pdbAnalysis.exactClinicalMatches[0];
         idsEl.textContent = m.ids.join(' · ') || 'UniProt Curated';
-        descEl.innerHTML = `<strong class="text-[#1A1A1A] font-semibold">Exact Match (${escapeHtml(query.mutCode)}):</strong> ${escapeHtml(m.description)}`;
+        descEl.innerHTML = `<strong class="text-[#18181B] font-semibold">Exact Match (${escapeHtml(query.mutCode)}):</strong> ${escapeHtml(m.description)}`;
         card.classList.remove('hidden');
       } else if (pdbAnalysis.sameSiteOtherVars.length > 0) {
         const list = pdbAnalysis.sameSiteOtherVars
@@ -1986,7 +1978,7 @@
           .map(v => `${v.original || pdbAnalysis.foundWt}${v.pos}${v.variations.length ? v.variations.join('/') : 'del'} (${v.description})`)
           .join('; ');
         idsEl.textContent = `${pdbAnalysis.sameSiteOtherVars.length} record(s) at pos ${query.pos}`;
-        descEl.innerHTML = `<strong class="text-[#1A1A1A] font-semibold">Known Clinical Site (Residue ${query.pos}):</strong> ${escapeHtml(list)}`;
+        descEl.innerHTML = `<strong class="text-[#18181B] font-semibold">Known Clinical Site (Residue ${query.pos}):</strong> ${escapeHtml(list)}`;
         card.classList.remove('hidden');
       } else {
         card.classList.add('hidden');
@@ -1994,7 +1986,7 @@
     }
 
     /*************************************************************************
-     * 13. DETERMINISTIC OFFLINE BIOPHYSICAL REPORT (NO API KEY REQUIRED)
+     * 13. DETERMINISTIC OFFLINE BIOPHYSICAL REPORT (NO API KEY NEEDED)
      *************************************************************************/
     function generateLocalReport(data, mode) {
       const { query, uniprot, pdbAnalysis } = data;
@@ -2033,68 +2025,63 @@
         : '';
 
       if (mode === 'plain') {
-        return `### Structural & Stability Summary
-- In **${uniprot.geneSymbol}** (*${uniprot.proteinName}*), residue **${query.pos}** switches from **${wtInfo.name}** (${wtInfo.hydro}, ${wtInfo.size}) to **${mutInfo.name}** (${mutInfo.hydro}, ${mutInfo.size}).${mismatchLine}
-- **3D Location:** AlphaFold confidence at this residue is **${pdbAnalysis.plddt.toFixed(1)}/100** (${confTier}). It sits in a **${pdbAnalysis.burialClass.toLowerCase()}** pocket contacting **${pdbAnalysis.neighbors.length} neighboring amino acids** within 8.0 Å.
+        return `### 1. Structural & Thermodynamic Impact
+- In **${uniprot.geneSymbol}** (*${uniprot.proteinName}*), position **${query.pos}** switches from **${wtInfo.name}** (${wtInfo.hydro}, ${wtInfo.size}) to **${mutInfo.name}** (${mutInfo.hydro}, ${mutInfo.size}).${mismatchLine}
+- **3D Location:** AlphaFold confidence is **${pdbAnalysis.plddt.toFixed(1)}/100** (${confTier}). This site sits in a **${pdbAnalysis.burialClass.toLowerCase()}** pocket contacting **${pdbAnalysis.neighbors.length} neighboring residues** within 8.0 Å.
 
-### Functional & Clinical Context
-- **Annotated Protein Regions:** ${overlapping.length > 0 ? overlapping.slice(0, 3).map(f => `${f.type} (${f.description})`).join('; ') : 'Outside curated UniProt domain or active-site boundaries.'}
-- **Clinical Evidence:** ${clinicalSummary}
-- **3D Neighborhood Sensitivity:** ${pdbAnalysis.hotspotNeighborsCount > 0 ? `**${pdbAnalysis.hotspotNeighborsCount} neighboring residues** in 3D space also carry curated UniProt variants, indicating a structurally sensitive hotspot.` : 'No curated variant cluster detected on immediate 3D neighbors.'}
-- **Disease Associations:** ${uniprot.diseases.length ? uniprot.diseases.join(', ') : 'Refer to the UniProt record for phenotype links.'}
+### 2. Functional & Pathway Mechanism
+- **Annotated Regions:** ${overlapping.length > 0 ? overlapping.slice(0, 3).map(f => `${f.type} (${f.description})`).join('; ') : 'Outside curated UniProt domain or active-site boundaries.'}
+- **Clinical & Hotspot Context:** ${clinicalSummary} ${pdbAnalysis.hotspotNeighborsCount > 0 ? `In addition, **${pdbAnalysis.hotspotNeighborsCount} neighboring residues** in 3D space carry curated UniProt variants.` : ''}
+- **Associated Diseases:** ${uniprot.diseases.length ? uniprot.diseases.join(', ') : 'Refer to the UniProt record for phenotype links.'}
 
-*Click **Add Gemini Key** in the top bar to unlock deep mechanistic AI reasoning and tailored wet-lab assay suggestions.*`;
+### 3. Suggested Wet-Lab Validation Assays
+- Compare folding stability of wild-type vs. \`${query.mutCode}\` using **thermal shift / nanoDSF (ΔTm)** and **Circular Dichroism**.
+- Add your free Gemini API key via **Add Gemini Key** in the top bar for tailored mechanistic hypotheses and pathway-specific assay plans.`;
       }
 
-      return `### Structural Context & Packing Density
-- **Substitution:** \`${uniprot.geneSymbol} ${query.mutCode}\` (${wtInfo.name} -> ${mutInfo.name}; ΔMW \`${mwSign}${mwDelta} Da\`; Formal Charge \`${wtInfo.charge} -> ${mutInfo.charge}\`; Biophysical shift: **${wtInfo.hydro}** -> **${mutInfo.hydro}**).${mismatchLine}
+      return `### 1. Structural & Thermodynamic Impact
+- **Substitution:** \`${uniprot.geneSymbol} ${query.mutCode}\` (${wtInfo.name} -> ${mutInfo.name}; ΔMW \`${mwSign}${mwDelta} Da\`; Formal Charge \`${wtInfo.charge} -> ${mutInfo.charge}\`; Shift: **${wtInfo.hydro}** -> **${mutInfo.hydro}**).${mismatchLine}
 - **AlphaFold Confidence:** **pLDDT ${pdbAnalysis.plddt.toFixed(1)} / 100** — ${confTier}.
 - **3D Packing Density:** **${pdbAnalysis.neighbors.length} Cα contacts <= 8.0 Å** (**${pdbAnalysis.tertiaryCount}** non-adjacent 3D tertiary contacts) — ${burialDesc}.
+- **Closest 3D Contacts:** ${pdbAnalysis.neighbors.slice(0, 6).map(n => `\`${n.one}${n.resi}\` (${n.dist.toFixed(2)} Å)`).join(', ') || 'None'}.
 
-### Overlapping & Nearby UniProt Annotations
+### 2. Functional & Pathway Mechanism
 ${overlapping.length > 0
   ? overlapping.slice(0, 5).map(f => `- **${f.type} [${f.start}–${f.end}]:** ${f.description}`).join('\n')
   : '- No curated UniProt domain, catalytic site, or binding motif directly overlaps residue ' + query.pos + '.'}
 ${nearby.length > 0
   ? `- **Adjacent Features (±10 aa):** ${nearby.slice(0, 3).map(f => `${f.type} [${f.start}–${f.end}] (${f.description})`).join('; ')}.`
   : ''}
-
-### Clinical Evidence & Nearest 3D Contacts
-- **Variant Record:** ${clinicalSummary}
-- **3D Hotspot Cluster:** **${pdbAnalysis.hotspotNeighborsCount}** of **${pdbAnalysis.neighbors.length}** neighboring residues within 8.0 Å carry curated UniProt Natural Variants.
-- **Closest 3D Contacts:** ${pdbAnalysis.neighbors.slice(0, 6).map(n => `\`${n.one}${n.resi}\` (${n.dist.toFixed(2)} Å)`).join(', ') || 'None'}.
+- **Clinical Record & Hotspot:** ${clinicalSummary} (**${pdbAnalysis.hotspotNeighborsCount}** of **${pdbAnalysis.neighbors.length}** 8.0 Å neighbors carry curated UniProt variants).
 - **Associated Diseases:** ${uniprot.diseases.length ? uniprot.diseases.join(', ') : 'None listed in UniProt summary.'}
 
-*Configure a free Gemini API key via **Add Gemini Key** to synthesize full mechanistic hypotheses (electrostatics, hydrogen bonding, steric clashes) and wet-lab validation plans.*`;
+### 3. Suggested Wet-Lab Validation Assays
+- **Biophysical Stability:** Measure thermal unfolding (\`ΔTm\`) via **nanoDSF** or **DSF** alongside a conservative control mutant at residue ${query.pos}.
+- **Functional Binding / Activity:** Quantify target interaction (\`Kd\` via **SPR/BLI** or **ITC**) across ${overlapping.length > 0 ? overlapping[0].description : uniprot.geneSymbol + ' native partners'}.
+- *Click **Add Gemini Key** to synthesize deep mechanistic reasoning powered by Gemini 3.8 Flash.*`;
     }
 
     /*************************************************************************
-     * 14. GEMINI REST API WITH AUTO-FALLBACK & IMMEDIATE INVALID-KEY SHORT-CIRCUIT
+     * 14. GEMINI API CALL WITH EXACT 2026 FALLBACK ARRAY & AUTH SHORT-CIRCUIT
      *************************************************************************/
-    const GEMINI_FALLBACK_MODELS = [
-      'gemini-2.5-flash',
-      'gemini-2.5-flash-lite',
-      'gemini-2.0-flash'
-    ];
-
     async function callGeminiWithFallback(contents, systemInstructionText, signal) {
       const apiKey = SafeStorage.get(API_STORAGE_KEY);
       if (!apiKey) throw new Error('NO_API_KEY');
 
       let lastErr = null;
 
-      for (const model of GEMINI_FALLBACK_MODELS) {
+      for (const model of GEMINI_MODELS) {
         if (signal && signal.aborted) {
           throw new DOMException('Aborted', 'AbortError');
         }
 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
         const payload = {
           contents,
           systemInstruction: { parts: [{ text: systemInstructionText }] }
         };
 
-        const retryDelays = [1000, 2000];
+        const retryDelays = [900, 1800];
         for (let attempt = 0; attempt <= retryDelays.length; attempt++) {
           try {
             const res = await fetch(url, {
@@ -2114,25 +2101,25 @@ ${nearby.length > 0
             const errJson = await res.json().catch(() => ({}));
             const msg = errJson?.error?.message || `HTTP ${res.status}`;
 
-            // Immediately stop fallback on invalid/unauthorized API key errors
-            const isInvalidKey =
+            // Short-circuit immediately on 400/401/403 API key errors
+            const isKeyError =
               res.status === 401 ||
               res.status === 403 ||
-              (res.status === 400 && /api.?key|key.*invalid|not valid|invalid.*argument.*key/i.test(msg));
+              (res.status === 400 && /api.?key|key.*invalid|not valid|permission|unauthenticated/i.test(msg));
 
-            if (isInvalidKey) {
-              const authErr = new Error(`Invalid or unauthorized Gemini API key (${msg}). Click "Add Gemini Key" to update it.`);
+            if (isKeyError) {
+              const authErr = new Error(`Gemini API key error (HTTP ${res.status}): ${msg}`);
               authErr.isAuthError = true;
               throw authErr;
             }
 
-            // Model unavailable -> move immediately to next fallback model
+            // Model unavailable -> try next model in GEMINI_MODELS
             if (res.status === 404 || res.status === 400) {
               lastErr = new Error(`${model}: ${msg}`);
               break;
             }
 
-            // Transient throttle or server error -> backoff retry
+            // Transient rate limit / server error -> backoff retry
             if ((res.status === 429 || res.status >= 500) && attempt < retryDelays.length) {
               await new Promise((resolve, reject) => {
                 const t = setTimeout(resolve, retryDelays[attempt]);
@@ -2159,7 +2146,7 @@ ${nearby.length > 0
           }
         }
       }
-      throw lastErr || new Error('Unable to reach Gemini API across fallback models.');
+      throw lastErr || new Error('Unable to reach Gemini API across configured models.');
     }
 
     function buildGroundedDataContext(data) {
@@ -2194,7 +2181,6 @@ ${nearby.length > 0
         return;
       }
 
-      // Abort any previous in-flight Gemini report request
       if (STATE.geminiAbortController) {
         STATE.geminiAbortController.abort();
       }
@@ -2210,10 +2196,9 @@ ${nearby.length > 0
       const prompt = `${buildGroundedDataContext(STATE.currentData)}
 
 Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a Plain English audience (students, clinicians, or cross-disciplinary readers)' : 'a Lab Researcher (structural biology and biochemistry depth)'} using these exact Markdown H3 headings:
-### Structural & Thermodynamic Impact
-### Functional & Pathway Mechanism
-### Clinical & Hotspot Context
-### Suggested Wet-Lab Validation Assays`;
+### 1. Structural & Thermodynamic Impact
+### 2. Functional & Pathway Mechanism
+### 3. Suggested Wet-Lab Validation Assays`;
 
       document.getElementById('reportModeLabel').textContent = `Synthesizing with Gemini (${isPlain ? 'Plain English' : 'Lab Researcher'})...`;
       document.getElementById('reportContent').innerHTML =
@@ -2226,28 +2211,26 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
           controller.signal
         );
 
-        // Stale-request protection: discard if user switched variants or re-triggered AI
         if (geminiReqId !== STATE.geminiRequestId || expectedPipelineId !== STATE.activeRequestId) {
           return;
         }
 
+        const prettyModel = formatModelDisplayName(model);
         STATE.lastMarkdownReport = text;
-        STATE.activeModelUsed = model;
+        STATE.activeModelUsed = prettyModel;
         STATE.chatHistory = [
           { role: 'user', parts: [{ text: prompt }] },
           { role: 'model', parts: [{ text }] }
         ];
 
         document.getElementById('reportModeLabel').textContent =
-          `${isPlain ? 'Plain English' : 'Lab Researcher'} · Grounded in AlphaFold + UniProt`;
-        setEngineBadge(model, true);
-        document.getElementById('runGeminiBtnText').textContent = 'Re-run AI';
+          `Powered by ${prettyModel} + AlphaFold DB`;
+        setEngineBadge(prettyModel, true);
         document.getElementById('reportContent').innerHTML = renderMarkdown(text);
       } catch (err) {
         if (err.name === 'AbortError') return;
         if (geminiReqId !== STATE.geminiRequestId || expectedPipelineId !== STATE.activeRequestId) return;
 
-        // Preserve local biophysical analysis cleanly so the UI never breaks
         const fallbackMd = generateLocalReport(STATE.currentData, STATE.audienceMode);
         STATE.lastMarkdownReport = fallbackMd;
         STATE.activeModelUsed = 'Offline Biophysical (Fallback)';
@@ -2263,7 +2246,7 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
     }
 
     /*************************************************************************
-     * 15. INTERACTIVE FOLLOW-UP Q&A WORKBENCH (GROUNDED AI + OFFLINE FALLBACK)
+     * 15. GROUNDED STRUCTURAL Q&A WORKBENCH
      *************************************************************************/
     function buildLocalAnswerForQuestion(question, data) {
       const { query, uniprot, pdbAnalysis } = data;
@@ -2274,10 +2257,10 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
       const overlapping = uniprot.features.filter(f => featureOverlapsPos(f, query.pos)).map(f => `${f.type} (${f.description})`).slice(0, 3).join('; ');
 
       if (q.includes('binding') || q.includes('affinity')) {
-        return `**Offline Structural Note (${uniprot.geneSymbol} ${query.mutCode}):** Residue ${query.pos} (${wtInfo.hydro} -> ${mutInfo.hydro}; local pLDDT **${pdbAnalysis.plddt.toFixed(1)}**) overlaps **${overlapping || 'no direct curated UniProt binding motif'}** and sits in a **${pdbAnalysis.burialClass}** microenvironment contacting ${topNeighbors || 'no close residues'}. Changes in formal charge (${wtInfo.charge} -> ${mutInfo.charge}) or side-chain bulk (${wtInfo.size} -> ${mutInfo.size}) near binding interfaces commonly alter Kd via electrostatic disruption or steric clashes.`;
+        return `**Offline Structural Note (${uniprot.geneSymbol} ${query.mutCode}):** Residue ${query.pos} (${wtInfo.hydro} -> ${mutInfo.hydro}; local pLDDT **${pdbAnalysis.plddt.toFixed(1)}**) overlaps **${overlapping || 'no direct curated UniProt binding motif'}** and sits in a **${pdbAnalysis.burialClass}** microenvironment contacting ${topNeighbors || 'no close residues'}. Changes in charge (${wtInfo.charge} -> ${mutInfo.charge}) or side-chain bulk (${wtInfo.size} -> ${mutInfo.size}) near binding interfaces commonly alter Kd via electrostatic disruption or steric clashes.`;
       }
       if (q.includes('control') || q.includes('mutagenesis') || q.includes('assay')) {
-        return `**Offline Experimental Control Suggestion (${uniprot.geneSymbol} ${query.mutCode}):** Pair your \`${query.mutCode}\` construct with a conservative substitution preserving wild-type charge/size at position ${query.pos} alongside wild-type **${uniprot.geneSymbol}**. Verify fold stability via **nanoDSF (ΔTm)** or **Circular Dichroism** before quantifying functional output across ${overlapping || uniprot.geneSymbol + ' target interactions'}.`;
+        return `**Offline Experimental Control Suggestion (${uniprot.geneSymbol} ${query.mutCode}):** Pair \`${query.mutCode}\` with a conservative substitution preserving wild-type charge/size at position ${query.pos} alongside wild-type **${uniprot.geneSymbol}**. Verify fold stability via **nanoDSF (ΔTm)** or **Circular Dichroism** before quantifying functional output across ${overlapping || uniprot.geneSymbol + ' target interactions'}.`;
       }
       if (q.includes('hotspot') || q.includes('cluster') || q.includes('neighbor')) {
         const clinNeighbors = pdbAnalysis.neighbors.filter(n => n.clinicalVariants.length > 0).slice(0, 5)
@@ -2300,13 +2283,11 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
       thread.classList.remove('hidden');
       input.value = '';
 
-      // User Inquiry Bubble
       const uDiv = document.createElement('div');
-      uDiv.className = 'p-3 rounded-[3px] bg-[#F8F8F6] border border-[#DCDCD6] text-xs text-[#1A1A1A]';
+      uDiv.className = 'p-3 rounded-[3px] bg-[#F8F8F6] border border-[#DCDCD6] text-xs text-[#18181B]';
       uDiv.innerHTML = `<span class="block text-[10px] font-mono uppercase tracking-wider text-[#990000] font-semibold mb-1">Inquiry</span>${escapeHtml(cleanQ)}`;
       thread.appendChild(uDiv);
 
-      // Deterministic Offline Q&A + Add Key CTA when no Gemini key is saved
       if (!SafeStorage.get(API_STORAGE_KEY)) {
         const localAns = buildLocalAnswerForQuestion(cleanQ, STATE.currentData);
         STATE.qaTranscript.push({ question: cleanQ, answer: localAns, engine: 'Offline Biophysical' });
@@ -2361,9 +2342,10 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
         const { text, model } = await callGeminiWithFallback(STATE.chatHistory, sysPrompt, chatController.signal);
         if (reqPipelineId !== STATE.activeRequestId) return;
 
+        const prettyModel = formatModelDisplayName(model);
         STATE.chatHistory.push({ role: 'model', parts: [{ text }] });
-        STATE.qaTranscript.push({ question: cleanQ, answer: text, engine: model });
-        aDiv.innerHTML = `<span class="block text-[10px] font-mono uppercase tracking-wider text-[#73736E] mb-1.5">FoldShift AI · ${escapeHtml(model)}</span>${renderMarkdown(text)}`;
+        STATE.qaTranscript.push({ question: cleanQ, answer: text, engine: prettyModel });
+        aDiv.innerHTML = `<span class="block text-[10px] font-mono uppercase tracking-wider text-[#73736E] mb-1.5">FoldShift AI &middot; ${escapeHtml(prettyModel)}</span>${renderMarkdown(text)}`;
       } catch (err) {
         if (err.name === 'AbortError') return;
         if (reqPipelineId !== STATE.activeRequestId) return;
@@ -2384,7 +2366,6 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
      * 16. MAIN 3-STAGE BIOINFORMATICS PIPELINE (RACE-CONDITION PROTECTED)
      *************************************************************************/
     async function runPipeline(rawQuery) {
-      // Cancel all in-flight pipeline, report, and chat requests immediately
       if (STATE.pipelineAbortController) STATE.pipelineAbortController.abort();
       if (STATE.geminiAbortController) STATE.geminiAbortController.abort();
       if (STATE.chatAbortController) STATE.chatAbortController.abort();
@@ -2397,7 +2378,6 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
       const loaderText = document.getElementById('viewerLoaderText');
       const analyzeBtn = document.getElementById('analyzeBtn');
 
-      // Reset transient per-variant UI
       clearMeasurement(false);
       STATE.activeDomain = null;
       STATE.showAllDomains = false;
@@ -2420,7 +2400,6 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
         return;
       }
 
-      // Highlight matching index preset
       document.querySelectorAll('.preset-btn').forEach(btn => {
         const isMatch = btn.dataset.val.toUpperCase() === query.label.toUpperCase();
         btn.classList.toggle('text-[#990000]', isMatch);
@@ -2442,11 +2421,10 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
         if (reqId !== STATE.activeRequestId) return;
         setPipelinePill(1, 'done');
 
-        // Normalize display gene symbol if user entered a UniProt accession
         query.gene = uniprot.geneSymbol;
         query.label = `${uniprot.geneSymbol} ${query.mutCode}`;
 
-        // STAGE 2: AlphaFold DB API (with multi-fragment selection)
+        // STAGE 2: AlphaFold DB API
         activeStep = 2;
         setPipelinePill(2, 'active');
         loaderText.textContent = `2/3 Fetching AlphaFold 3D PDB (${uniprot.accession})...`;
@@ -2455,7 +2433,7 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
         if (reqId !== STATE.activeRequestId) return;
         setPipelinePill(2, 'done');
 
-        // STAGE 3: Hardened In-Browser 3D Coordinate Math
+        // STAGE 3: In-Browser 3D Geometry Engine
         activeStep = 3;
         setPipelinePill(3, 'active');
         loaderText.textContent = `3/3 Computing 8.0 Å microenvironment around ${query.mutCode}...`;
@@ -2472,7 +2450,6 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
         if (reqId !== STATE.activeRequestId) return;
         setPipelinePill(3, 'done');
 
-        // Sort UniProt features: overlapping site FIRST, then functional priority & span tightness
         const PRIORITY = {
           'Active site': 1, 'Binding site': 2, 'DNA binding': 3, 'Metal binding': 4,
           'Zinc finger': 5, 'Disulfide bond': 6, 'Site': 7, 'Domain': 8, 'Region': 9
@@ -2489,7 +2466,7 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
 
         STATE.currentData = { query, uniprot, af, pdbAnalysis, sortedFeatures };
 
-        // Populate 4-Card Key Metrics Grid
+        // Populate 2x2 Key Metrics Grid
         const fragTag = af.fragmentCount > 1 ? ` · Frag ${pdbAnalysis.modelStart}–${pdbAnalysis.modelEnd}` : '';
         document.getElementById('viewerSubtitle').textContent =
           `${uniprot.proteinName} (${uniprot.accession}) · ${query.mutCode}${fragTag}`;
@@ -2522,7 +2499,6 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
           verifyEl.innerHTML = `${ICONS.alert}<span class="text-[#B45309] truncate">PDB has ${escapeHtml(pdbAnalysis.foundWt)} at pos ${query.pos}</span>`;
         }
 
-        // Render 3D Structure, 1D Track + Sorted Chips, Contacts Table & Clinical Card
         renderStructure('mutation');
         renderSequenceAndDomains();
         renderContactsTable(pdbAnalysis);
@@ -2544,7 +2520,6 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
           );
         }
 
-        // Run Gemini AI automatically if key is saved; otherwise render deterministic Offline Biophysical Report
         if (SafeStorage.get(API_STORAGE_KEY)) {
           await runGeminiAnalysis(reqId);
         } else {
@@ -2554,7 +2529,6 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
           document.getElementById('reportModeLabel').textContent =
             `${STATE.audienceMode === 'plain' ? 'Plain English' : 'Lab Researcher'} · Offline Biophysical Engine`;
           setEngineBadge('Offline Biophysical (No Key)', false);
-          document.getElementById('runGeminiBtnText').textContent = 'Run Gemini AI';
           document.getElementById('reportContent').innerHTML = renderMarkdown(localMd);
         }
       } catch (err) {
@@ -2572,7 +2546,7 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
     }
 
     /*************************************************************************
-     * 17. EXPORT MARKDOWN RESEARCH BRIEF (.MD) INCLUDING Q&A TRANSCRIPT
+     * 17. EXPORT MARKDOWN RESEARCH BRIEF (.MD)
      *************************************************************************/
     function exportBriefMarkdown() {
       if (!STATE.currentData) return;
@@ -2596,7 +2570,7 @@ Produce a clean, publication-grade structural report tailored for ${isPlain ? 'a
         : '- No curated UniProt Natural Variant record at this exact coordinate.';
 
       const qaSection = STATE.qaTranscript.length > 0
-        ? `\n---\n\n## Follow-Up Structural Q&A Transcript\n${STATE.qaTranscript.map((item, idx) =>
+        ? `\n---\n\n## Grounded Structural Q&A Transcript\n${STATE.qaTranscript.map((item, idx) =>
             `### Q${idx + 1}: ${item.question}\n*Engine: ${item.engine}*\n\n${item.answer}`
           ).join('\n\n')}\n`
         : '';
@@ -2680,7 +2654,7 @@ ${qaSection}
       const pBtn = document.getElementById('audPlain');
 
       const activeCls = 'px-2.5 py-1 rounded-[2px] font-medium bg-[#FFFFFF] text-[#990000] border border-[#DCDCD6] transition';
-      const idleCls = 'px-2.5 py-1 rounded-[2px] font-medium text-[#52524E] hover:text-[#1A1A1A] border border-transparent transition';
+      const idleCls = 'px-2.5 py-1 rounded-[2px] font-medium text-[#52524E] hover:text-[#18181B] border border-transparent transition';
 
       rBtn.className = mode === 'researcher' ? activeCls : idleCls;
       pBtn.className = mode === 'plain' ? activeCls : idleCls;
@@ -2697,7 +2671,7 @@ ${qaSection}
       }
     }
 
-    // Search & Preset Events
+    // Search & Preset Listeners
     document.getElementById('queryForm').addEventListener('submit', e => {
       e.preventDefault();
       runPipeline(document.getElementById('variantInput').value);
@@ -2720,7 +2694,7 @@ ${qaSection}
 
     document.getElementById('statusClose').addEventListener('click', hideStatus);
 
-    // 3D Viewer Toolbar Events
+    // 3D Viewer Toolbar Listeners
     document.getElementById('colorMode').addEventListener('change', () => renderStructure('none'));
 
     document.getElementById('focusBtn').addEventListener('click', () => {
@@ -2740,7 +2714,7 @@ ${qaSection}
       const btn = document.getElementById('surfaceBtn');
       btn.className = STATE.isSurfaceOn
         ? 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FDF2F2] border border-[#990000] text-[#990000] transition'
-        : 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition';
+        : 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#18181B] hover:bg-[#F2F2EE] transition';
       renderStructure('none');
     });
 
@@ -2749,7 +2723,7 @@ ${qaSection}
       const btn = document.getElementById('spinBtn');
       btn.className = STATE.isSpinning
         ? 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FDF2F2] border border-[#990000] text-[#990000] transition'
-        : 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#1A1A1A] hover:bg-[#F2F2EE] transition';
+        : 'px-2.5 py-1.5 text-xs font-medium rounded-[3px] bg-[#FFFFFF] border border-[#DCDCD6] text-[#52524E] hover:text-[#18181B] hover:bg-[#F2F2EE] transition';
       if (STATE.viewer && STATE.viewerReady) STATE.viewer.spin(STATE.isSpinning ? 'y' : false, 0.38);
     });
 
@@ -2768,12 +2742,12 @@ ${qaSection}
       renderSequenceAndDomains();
     });
 
-    // Audience Toggle & Gemini Trigger
+    // Audience Toggle & Regenerate Button
     document.getElementById('audResearcher').addEventListener('click', () => setAudienceMode('researcher'));
     document.getElementById('audPlain').addEventListener('click', () => setAudienceMode('plain'));
     document.getElementById('runGeminiBtn').addEventListener('click', () => runGeminiAnalysis(STATE.activeRequestId));
 
-    // Q&A Workbench Events
+    // Q&A Workbench Listeners
     document.getElementById('chatForm').addEventListener('submit', e => {
       e.preventDefault();
       sendChatQuestion(document.getElementById('chatInput').value);
@@ -2782,7 +2756,7 @@ ${qaSection}
       chip.addEventListener('click', () => sendChatQuestion(chip.dataset.q));
     });
 
-    // API Key Modal Events
+    // API Modal Listeners
     document.getElementById('apiKeyBtn').addEventListener('click', openApiModal);
     document.getElementById('closeModalBtn').addEventListener('click', closeApiModal);
     document.getElementById('cancelModalBtn').addEventListener('click', closeApiModal);
